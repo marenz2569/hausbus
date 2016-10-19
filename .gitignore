@@ -3,4 +3,5 @@
 *.elf
 *.hex
 
-src/handler.h
+# auto generated code
+src/lib/handler.h

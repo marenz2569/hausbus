@@ -36,19 +36,19 @@ fuse:
 	sudo $(AVRDUDE) -cusbasp $(FUSES)
 
 clean:
-	rm -f $(addsuffix .hex, $(TARGETS)) $(addsuffix .elf, $(TARGETS)) $(addprefix src/, $(addsuffix .o, $(TARGETS))) $(OBJECTS)
+	rm -f $(addsuffix .hex, $(TARGETS)) $(addsuffix .elf, $(TARGETS)) $(addprefix src/, $(addsuffix .o, $(TARGETS))) $(OBJECTS) src/lib/hausbus_protocols.o
 
 %.elf:
 	echo "$(PUR)Copying handlers$(NC)"
-	cp -f src/$(basename $@).h src/handler.h
+	cp -f src/$(basename $@).h src/lib/handler.h
 	echo "$(PUR)Building main file$(NC)"
 	make src/$(basename $@).o
 	echo "$(PUR)Building protocol handler$(NC)"
-	make --always-make src/hausbus_protocols.o
+	make --always-make src/lib/hausbus_protocols.o
 	echo "$(PUR)Building other objects$(NC)"
 	make objects
 	echo "$(PUR)Building $(basename $@) binary$(NC)"
-	$(COMPILE) -o $@ $(OBJECTS) src/$(basename $@).o src/hausbus_protocols.o
+	$(COMPILE) -o $@ $(OBJECTS) src/$(basename $@).o src/lib/hausbus_protocols.o
 
 %.hex: %.elf
 	rm -f $@

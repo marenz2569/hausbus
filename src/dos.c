@@ -7,7 +7,7 @@
 #include <mcp2515.h>
 #include <mcp2515_defs.h>
 #include <spi.h>
-#include "hausbus_protocols.h"
+#include "lib/hausbus_protocols.h"
 
 int main(void)
 {
