@@ -16,7 +16,7 @@ int main(void)
 
 	mcp2515_init();
 
-	DDRB |= _BV(DDB0);
+	DDRB |= _BV(DDB1);
 
 	sei();
 
@@ -60,7 +60,7 @@ void LAMP1_handler(void)
 	if (can_get_len == 1 && can_is_standard) {
 		switch (can_frame.data[0]) {
 		case LAMP_ON:
-			PORTB ^= _BV(PORTB0);
+			PORTB ^= _BV(PORTB1);
 			break;
 		}
 	}
