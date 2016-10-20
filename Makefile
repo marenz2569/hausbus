@@ -20,7 +20,7 @@ NC = \033[0m
 
 .PHONY: clean fuse
 
-.PRECIOUS: $(OBJECTS) $(addsuffix .elf, $(TARGETS)) $(addprefix src/, $(addsuffix .o, $(TARGETS)))
+.INTERMEDIATE: $(addsuffix .elf, $(TARGETS))
 
 all:	$(addsuffix .elf, $(TARGETS)) $(addsuffix .avr-size, $(TARGETS))
 
@@ -42,7 +42,7 @@ clean:
 	echo "$(PUR)Copying handlers$(NC)"
 	cp -f src/$(basename $@).h src/lib/handler.h
 	echo "$(PUR)Building main file$(NC)"
-	make src/$(basename $@).o
+	make --always-make src/$(basename $@).o
 	echo "$(PUR)Building protocol handler$(NC)"
 	make --always-make src/lib/hausbus_protocols.o
 	echo "$(PUR)Building other objects$(NC)"
