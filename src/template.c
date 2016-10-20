@@ -57,7 +57,7 @@ ISR(INT0_vect)
 
 void LAMP1_handler(void)
 {
-	if (can_get_len == 1 && can_is_standard) {
+	if (can_get_len == 1 && can_is_standard && can_is_standard) {
 		switch (can_frame.data[0]) {
 		case LAMP_ON:
 			PORTB ^= _BV(PORTB1);
