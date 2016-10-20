@@ -20,12 +20,13 @@ void can_print(void)
 	}
 	if (can_is_remote_frame) {
 		printf("rtr\n");
+	} else {
+		printf("data");
+		for (i=0; i<can_get_len; i++) {
+			printf(" %x", can_frame.data[i]);
+		}
+		printf("\n");
 	}
-	printf("data");
-	for (i=0; i<can_get_len; i++) {
-		printf(" %x", can_frame.data[i]);
-	}
-	printf("\n");
 }
 
 int main(void)
