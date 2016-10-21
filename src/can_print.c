@@ -31,8 +31,6 @@ void can_print(void)
 
 int main(void)
 {
-	tick_init();
-
 	uart_init();
 
 	/* INT0, low level */
