@@ -75,6 +75,20 @@ void pwm_set(volatile uint8_t * const port, const uint8_t pin, const uint8_t val
 	}
 }
 
+uint8_t pwm_get(volatile uint8_t * const port, const uint8_t pin)
+{
+	uint8_t i;
+
+	for (i=0; i<sizeof(pwm_handlermap)/sizeof(*pwm_handlermap); i++) {
+		if (port == pwm_handlermap[i].port && pin == pwm_handlermap[i].pin) {
+			return *pwm_handlermap[i].value;
+		}
+	}
+
+	/* this should never be reached */
+	return 0;
+}
+
 ISR(TIMER2_COMPA_vect)
 {
 	static volatile uint8_t pwm = 0;

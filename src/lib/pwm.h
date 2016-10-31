@@ -21,4 +21,6 @@ void pwm_dec(volatile uint8_t * const port, const uint8_t pin);
 
 void pwm_set(volatile uint8_t * const port, const uint8_t pin, const uint8_t value);
 
+uint8_t pwm_get(volatile uint8_t * const port, const uint8_t pin);
+
 #endif
