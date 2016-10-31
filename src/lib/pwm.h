@@ -9,6 +9,10 @@
 #error "PWM_TABLE is not defined."
 #endif
 
+#define B &PORTB
+#define C &PORTC
+#define D &PORTD
+
 void pwm_init(void);
 
 void pwm_inc(volatile uint8_t * const port, const uint8_t pin);
