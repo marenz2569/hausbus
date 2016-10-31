@@ -21,10 +21,11 @@ void pwm_init(void)
 {
 	uint8_t i;
 
-	for (i=0; i<sizeof(pwm_handlermap)/sizeof(*pwm_handlermap); i++) {
 #define ENTRY(a, b) DDR ## a |= _BV(DD ## a ## b);
-		PWM_TABLE
+	PWM_TABLE
 #undef ENTRY
+
+	for (i=0; i<sizeof(pwm_handlermap)/sizeof(*pwm_handlermap); i++) {
 		*pwm_handlermap[i].value = 0;
 	}
 
