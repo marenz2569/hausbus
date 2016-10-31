@@ -25,11 +25,7 @@ void pwm_init(void)
 #define ENTRY(a, b) DDR ## a |= _BV(DD ## a ## b);
 		PWM_TABLE
 #undef ENTRY
-		/*
-		 * value has to be changed to 0
-		 * 50 is only for testing right now
-		 */
-		*pwm_handlermap[i].value = 255;
+		*pwm_handlermap[i].value = 0;
 	}
 
 	/* setup timer 2 */
@@ -65,9 +61,10 @@ ISR(TIMER2_COMPA_vect)
 	}
 
 	for (i=0; i<sizeof(pwm_handlermap)/sizeof(*pwm_handlermap); i++) {
-		if (pwm < *pwm_handlermap[i].value) {
+		if (pwm == 0 && 0 != *pwm_handlermap[i].value) {
 			*pwm_handlermap[i].port |= _BV(pwm_handlermap[i].pin);
-		} else {
+		}
+		if (pwm == *pwm_handlermap[i].value) {
 			*pwm_handlermap[i].port &= ~_BV(pwm_handlermap[i].pin);
 		}
 	}
