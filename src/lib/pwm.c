@@ -96,7 +96,7 @@ ISR(TIMER2_COMPA_vect)
 
 	TCNT2 = 0;
 
-	if (++pwm > 255) {
+	if (pwm++ >= 255) {
 		pwm = 0;
 	}
 
