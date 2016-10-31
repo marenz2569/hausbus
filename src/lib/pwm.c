@@ -29,7 +29,6 @@ void pwm_init(void)
 	}
 
 	/* setup timer 2 */
-	pwm = 0;
 	OCR2A = 16;
 	TIMSK2 = _BV(OCIE2A);
 	TCCR2B = _BV(CS20);
@@ -54,7 +53,10 @@ void pwm_set( )
 
 ISR(TIMER2_COMPA_vect)
 {
+	static volatile uint8_t pwm = 0;
 	uint8_t i;
+
+	TCNT2 = 0;
 
 	if (++pwm > 255) {
 		pwm = 0;
