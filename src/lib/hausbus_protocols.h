@@ -26,7 +26,8 @@ enum {
 	LAMP_ON       = 1,
 	LAMP_SWITCH   = 2,
 	LAMP_DIM_DOWN = 3,
-	LAMP_DIM_UP   = 4
+	LAMP_DIM_UP   = 4,
+	LAMP_DIM_TO   = 5,
 };
 
 #endif
