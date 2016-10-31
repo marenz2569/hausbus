@@ -42,7 +42,7 @@ void pwm_inc(volatile uint8_t * const port, const uint8_t pin)
 	for (i=0; i<sizeof(pwm_handlermap)/sizeof(*pwm_handlermap); i++) {
 		if (port == pwm_handlermap[i].port && pin == pwm_handlermap[i].pin) {
 			if (*pwm_handlermap[i].value < 255) {
-				*pwm_handlermap[i].value++;
+				(*pwm_handlermap[i].value)++;
 			}
 			break;
 		}
