@@ -11,4 +11,10 @@
 
 void pwm_init(void);
 
+void pwm_inc(volatile uint8_t * const port, const uint8_t pin);
+
+void pwm_dec(volatile uint8_t * const port, const uint8_t pin);
+
+void pwm_set(volatile uint8_t * const port, const uint8_t pin, const uint8_t value);
+
 #endif

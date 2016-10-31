@@ -35,22 +35,45 @@ void pwm_init(void)
 	TCCR2B = _BV(CS20);
 }
 
-#if 0
-void pwm_inc( )
+void pwm_inc(volatile uint8_t * const port, const uint8_t pin)
 {
+	uint8_t i;
 
+	for (i=0; i<sizeof(pwm_handlermap)/sizeof(*pwm_handlermap); i++) {
+		if (port == pwm_handlermap[i].port && pin == pwm_handlermap[i].pin) {
+			if (*pwm_handlermap[i].value < 255) {
+				*pwm_handlermap[i].value++;
+			}
+			break;
+		}
+	}
 }
 
-void pwm_dec( )
+void pwm_dec(volatile uint8_t * const port, const uint8_t pin)
 {
+	uint8_t i;
 
+	for (i=0; i<sizeof(pwm_handlermap)/sizeof(*pwm_handlermap); i++) {
+		if (port == pwm_handlermap[i].port && pin == pwm_handlermap[i].pin) {
+			if (*pwm_handlermap[i].value > 0) {
+				--*pwm_handlermap[i].value;
+			}
+			break;
+		}
+	}
 }
 
-void pwm_set( )
+void pwm_set(volatile uint8_t * const port, const uint8_t pin, const uint8_t value)
 {
+	uint8_t i;
 
+	for (i=0; i<sizeof(pwm_handlermap)/sizeof(*pwm_handlermap); i++) {
+		if (port == pwm_handlermap[i].port && pin == pwm_handlermap[i].pin) {
+			*pwm_handlermap[i].value = value;
+			break;
+		}
+	}
 }
-#endif
 
 ISR(TIMER2_COMPA_vect)
 {
