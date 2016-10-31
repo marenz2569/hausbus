@@ -14,19 +14,20 @@ void can_print(void)
 {
 	uint8_t i;
 
-	printf("id: %" PRIu32 "\n", can_get_std_id);
-	if (can_is_extended) {
-		printf("eid: %" PRIu32 "\n", can_get_ex_id);
+	if (can_is_extended || can_is_remote_frame) {
+		return;
 	}
-	if (can_is_remote_frame) {
-		printf("rtr\n");
-	} else {
-		printf("data");
-		for (i=0; i<can_get_len; i++) {
-			printf(" %x", can_frame.data[i]);
+
+	printf("{\"id\":%" PRIu32 ",\"data\":[", can_get_std_id);
+
+	for (i=0; i<can_get_len;) {
+		printf("%d", can_frame.data[i]);
+		if (++i < can_get_len) {
+			printf(",");
 		}
-		printf("\n");
 	}
+
+	printf("]}\n");
 }
 
 int main(void)
