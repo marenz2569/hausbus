@@ -3,4 +3,6 @@
 
 #define HANDLER_TABLE
 
+#define PWM_TABLE
+
 #endif
