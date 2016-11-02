@@ -20,8 +20,6 @@ NC = \033[0m
 
 .PHONY: clean fuse
 
-.INTERMEDIATE: $(addsuffix .elf, $(TARGETS))
-
 all:	$(addsuffix .elf, $(TARGETS)) $(addsuffix .avr-size, $(TARGETS))
 
 objects: $(OBJECTS)
