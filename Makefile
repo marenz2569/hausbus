@@ -22,6 +22,8 @@ NC = \033[0m
 
 .PHONY: clean fuse
 
+.PRECIOUS: %.elf
+
 all: $(addsuffix .hex, $(TARGETS))
 
 objects: $(OBJECTS)
