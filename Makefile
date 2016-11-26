@@ -7,7 +7,7 @@ VOBJECTS   = src/lib/hausbus_protocols.o src/lib/pwm.o
 # clockout at PORTB0
 FUSES      = -U lfuse:w:0xbe:m -U hfuse:w:0xd9:m -U efuse:w:0x07:m
 
-TARGETS = dos template can_print lamp
+TARGETS = $(shell ls src/*.c)
 override _TARGETS = $(basename $(notdir $(TARGETS)))
 
 LIB =
