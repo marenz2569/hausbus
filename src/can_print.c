@@ -63,13 +63,11 @@ ISR(INT0_vect)
 		can_rxh(0);
 		/* handle can frame */
 		can_print();
-		hausbus_handler();
 	}
 	if (canintf & MCP2515_CANINTF_RX1IF) {
 		can_rxh(1);
 		/* handle can frame */
 		can_print();
-		hausbus_handler();
 	}
 
 	/* reset interrupt flags */
