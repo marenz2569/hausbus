@@ -1,4 +1,4 @@
-#include <avr/pgmspace.h>
+#include <string.h>
 #include <mcp2515.h>
 
 #include "hausbus_protocols.h"
@@ -6,7 +6,7 @@
 const struct {
 	hausbus_handler_ids id;
 	void (*handler) (void);
-} hausbus_handlermap[] PROGMEM = {
+} __flash hausbus_handlermap[] = {
 #define ENTRY(a) { a, a ## _handler },
 	HANDLER_TABLE
 #undef ENTRY
@@ -24,7 +24,7 @@ void hausbus_handler(void)
 		 * it will be checked in each handler function
 		 */
 		addr = can_addr & (MCP2515_RX_EID_FLAG | MCP2515_RX_ID_MASK | (can_is_extended?(MCP2515_RX_EID_MASK):0));
-		if (0 == memcmp_P(&addr, &hausbus_handlermap[i].id, 4)) {
+		if (0 == memcmp(&addr, &hausbus_handlermap[i].id, 4)) {
 			hausbus_handlermap[i].handler();
 			break;
 		}
