@@ -2,26 +2,25 @@
 #include <stdio.h>
 #include <avr/interrupt.h>
 #include <inttypes.h>
-#include <avr/pgmspace.h>
 #include <avr/sleep.h>
 
 #include <mcp2515.h>
+#include <mcp2515_defs.h>
+#include <spi.h>
 #include "lib/pwm.h"
-#include "lib/switch.h"
-#include "lib/tick.h"
 
 int main(void)
 {
+	pwm_init();
+
 	/* INT0, low level */
 	EIMSK = _BV(INT0);
 
 	mcp2515_init();
 
-	// tick_init();
+	sei();
 
 	set_sleep_mode(SLEEP_MODE_EXT_STANDBY);
-
-	sei();
 
 	for (;;) {
 		sleep_mode();
@@ -33,7 +32,6 @@ int main(void)
 void can_msg_handler(void)
 {
 	pwm_handler();
-	switch_handler();
 }
 
 ISR(INT0_vect)
