@@ -14,4 +14,6 @@ uint64_t async_delay;
 
 void tick_init(void);
 
+extern void user_tick_interrupt(void);
+
 #endif

@@ -3,24 +3,32 @@
 
 #include <inttypes.h>
 
-#include "handler.h"
-
-#ifndef PWM_TABLE
-#error "PWM_TABLE is not defined."
-#endif
-
 #define B &PORTB
 #define C &PORTC
 #define D &PORTD
 
+/*
+ * commands:
+ * set pwm value: 0 0 [6 bits mask] [6 bytes pwm values each being 1 byte long]
+ * set pwm lock: 1 1 [6 bits mask] [6 bytes pwm values each being 1 byte long]
+ * remove pwm lock: 1 0 [6 bits mask] [6 bytes nothing]
+ */
+
+enum {
+	PWM_SET = 0x00,
+	PWM_LOCK_SET = 0xc0,
+	PWM_LOCK_REMOVE = 0x80,
+	PWM_MASK = 0x3f
+};
+
 void pwm_init(void);
 
-void pwm_inc(volatile uint8_t * const port, const uint8_t pin);
+void pwm_handler(void);
 
-void pwm_dec(volatile uint8_t * const port, const uint8_t pin);
+void pwm_set(const uint32_t id, const uint8_t sub, const uint8_t value);
 
-void pwm_set(volatile uint8_t * const port, const uint8_t pin, const uint8_t value);
+void pwm_lock_set(const uint32_t id, const uint8_t sub, const uint8_t value);
 
-uint8_t pwm_get(volatile uint8_t * const port, const uint8_t pin);
+void pwm_lock_remove(const uint32_t id, const uint8_t sub);
 
 #endif
