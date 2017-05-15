@@ -153,17 +153,17 @@ void pwm_handler(void)
 			}
 			switch (can_frame.data[0] & ~PWM_MASK) {
 			case PWM_SET:
-				if (*(pwm_handlermap[i].lock) == 0) {
+				if (*pwm_handlermap[i].lock == 0) {
 pwm_set_value:
 					*pwm_handlermap[i].value = can_frame.data[pwm_handlermap[i].sub + 1];
 				}
 				break;
 			case PWM_LOCK_SET:
-				*(pwm_handlermap[i].lock) = 1;
+				*pwm_handlermap[i].lock = 1;
 				goto pwm_set_value;
 				break;
 			case PWM_LOCK_REMOVE:
-				*(pwm_handlermap[i].lock) = 0;
+				*pwm_handlermap[i].lock = 0;
 				break;
 			/* this case should never happen */
 			default:
