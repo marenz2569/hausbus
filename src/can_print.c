@@ -8,6 +8,7 @@
 #include <mcp2515_defs.h>
 #include <spi.h>
 #include "lib/uart.h"
+#include "lib/tick.h"
 
 void can_print(void)
 {
@@ -53,5 +54,4 @@ ISR(INT0_vect)
 
 void user_tick_interrupt(void)
 {
-
 }
