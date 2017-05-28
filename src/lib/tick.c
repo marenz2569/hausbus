@@ -6,7 +6,7 @@ void tick_init(void)
 {
 	/* set up an interrupt every 1ms */
 	systick = 0;
-	OCR0A = 250;
+	OCR0A = 249;
 	TIMSK0 = _BV(OCIE0A);
 	TCCR0B = _BV(CS01) | _BV(CS00);
 }
