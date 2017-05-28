@@ -43,7 +43,7 @@ fuse:
 	sudo $(AVRDUDE) -cusbasp $(FUSES)
 
 clean:
-	rm -f $(addsuffix .hex, $(_TARGETS)) $(addsuffix .elf, $(_TARGETS)) $(addprefix src/, $(addsuffix .o, $(_TARGETS))) $(OBJECTS) $(VOBJECTS) src/lib/handler.h
+	rm -f *.hex *.elf src/*.o $(OBJECTS) $(VOBJECTS) src/lib/handler.h
 
 %.elf: FORCE
 	echo "$(PUR)Building objects$(NC)"
