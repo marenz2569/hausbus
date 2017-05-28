@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsi:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+
+	<xsi:simpleType name="pins">
+		<xsi:restriction base="xsi:string">
+			<xsi:enumeration value="B1"/>
+			<xsi:enumeration value="C0"/>
+			<xsi:enumeration value="C1"/>
+			<xsi:enumeration value="C2"/>
+			<xsi:enumeration value="C3"/>
+			<xsi:enumeration value="C4"/>
+			<xsi:enumeration value="C5"/>
+			<xsi:enumeration value="C6"/>
+			<xsi:enumeration value="D0"/>
+			<xsi:enumeration value="D1"/>
+			<xsi:enumeration value="D3"/>
+			<xsi:enumeration value="D4"/>
+			<xsi:enumeration value="D5"/>
+			<xsi:enumeration value="D6"/>
+			<xsi:enumeration value="D7"/>
+		</xsi:restriction>
+	</xsi:simpleType>
+
+	<xsi:complexType name="long">
+		<xsi:choice>
+			<xsi:element name="code" type="xsi:string" minOccurs="1" maxOccurs="1"/>
+		</xsi:choice>
+	</xsi:complexType>
+
+	<xsi:complexType name="short0">
+		<xsi:choice minOccurs="1" maxOccurs="unbounded">
+			<xsi:element name="short" type="short1" minOccurs="0" maxOccurs="1"/>
+			<xsi:element name="long" type="long" minOccurs="0" maxOccurs="1"/>
+			<xsi:element name="code" type="xsi:string" minOccurs="0" maxOccurs="1"/>
+		</xsi:choice>
+	</xsi:complexType>
+
+	<xsi:complexType name="short1">
+		<xsi:choice minOccurs="1" maxOccurs="unbounded">
+			<xsi:element name="short" type="short2" minOccurs="0" maxOccurs="1"/>
+			<xsi:element name="long" type="long" minOccurs="0" maxOccurs="1"/>
+			<xsi:element name="code" type="xsi:string" minOccurs="0" maxOccurs="1"/>
+		</xsi:choice>
+	</xsi:complexType>
+
+	<xsi:complexType name="short2">
+		<xsi:choice minOccurs="1" maxOccurs="unbounded">
+			<xsi:element name="short" type="short3" minOccurs="0" maxOccurs="1"/>
+			<xsi:element name="long" type="long" minOccurs="0" maxOccurs="1"/>
+			<xsi:element name="code" type="xsi:string" minOccurs="0" maxOccurs="1"/>
+		</xsi:choice>
+	</xsi:complexType>
+
+	<xsi:complexType name="short3">
+		<xsi:choice minOccurs="1" maxOccurs="unbounded">
+			<xsi:element name="long" type="long" minOccurs="0" maxOccurs="1"/>
+			<xsi:element name="code" type="xsi:string" minOccurs="0" maxOccurs="1"/>
+		</xsi:choice>
+	</xsi:complexType>
+
+	<xsi:simpleType name="id">
+		<xsi:restriction base="xsi:integer">
+			<!-- integers must be even
+			<xsi:pattern value="\D*[02468]"/>
+			-->
+			<xsi:minInclusive value="200"/>
+			<xsi:maxInclusive value="2046"/>
+		</xsi:restriction>
+	</xsi:simpleType>
+
+	<xsi:element name="hausbus">
+		<xsi:complexType>
+			<xsi:sequence>
+				<xsi:element name="device" minOccurs="0" maxOccurs="unbounded">
+					<xsi:complexType>
+						<xsi:choice maxOccurs="unbounded">
+							<xsi:element name="pwm" minOccurs="0" maxOccurs="unbounded">
+								<xsi:complexType>
+									<xsi:choice maxOccurs="unbounded">
+										<xsi:element name="out" minOccurs="1" maxOccurs="7">
+											<xsi:complexType>
+												<xsi:attribute name="pin" type="pins" use="required"/>
+											</xsi:complexType>
+										</xsi:element>
+									</xsi:choice>
+									<xsi:attribute name="id" type="id" use="required"/>
+								</xsi:complexType>
+							</xsi:element>
+							<xsi:element name="output" minOccurs="0" maxOccurs="unbounded">
+								<xsi:complexType>
+									<xsi:choice maxOccurs="unbounded">
+										<xsi:element name="out" minOccurs="1" maxOccurs="24">
+											<xsi:complexType>
+												<xsi:attribute name="pin" type="pins" use="required"/>
+											</xsi:complexType>
+										</xsi:element>
+									</xsi:choice>
+									<xsi:attribute name="id" type="id" use="required"/>
+								</xsi:complexType>
+							</xsi:element>
+							<xsi:element name="button" minOccurs="0" maxOccurs="unbounded">
+								<xsi:complexType>
+									<xsi:choice maxOccurs="unbounded">
+										<xsi:element name="in" minOccurs="1" maxOccurs="24">
+											<xsi:complexType>
+												<xsi:choice minOccurs="1" maxOccurs="unbounded">
+													<xsi:element name="short" type="short0" minOccurs="0" maxOccurs="1"/>
+													<xsi:element name="long" type="long" minOccurs="0" maxOccurs="1"/>
+												</xsi:choice>
+												<xsi:attribute name="pin" type="pins" use="required"/>
+											</xsi:complexType>
+										</xsi:element>
+									</xsi:choice>
+									<xsi:attribute name="id" type="id" use="required"/>
+								</xsi:complexType>
+							</xsi:element>
+						</xsi:choice>
+						<xsi:attribute name="name" type="xsi:string" use="required"/>
+					</xsi:complexType>
+					<xsi:unique name="unique-pin">
+						<xsi:selector xpath="*/*"/>
+						<xsi:field xpath="@pin"/>
+					</xsi:unique>
+				</xsi:element>
+			</xsi:sequence>
+		</xsi:complexType>
+		<xsi:unique name="unique-device">
+			<xsi:selector xpath="*"/>
+			<xsi:field xpath="@name"/>
+		</xsi:unique>
+		<xsi:unique name="unique-id">
+			<xsi:selector xpath="*/*"/>
+			<xsi:field xpath="@id"/>
+		</xsi:unique>
+	</xsi:element>
+</xsi:schema>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<hausbus xsi:noNamespaceSchemaLocation="config.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<device name="taster">
+		<button id="400">
+			<in pin="C0">
+				<short>
+					<code>
+output_toggle(200, 0);
+					</code>
+				</short>
+				<long>
+					<code>
+DIMMER(202, 0);
+					</code>
+				</long>
+			</in>
+		</button>
+	</device>
+	<device name="lampe">
+		<output id="200">
+			<out pin="C0"/>
+		</output>
+		<pwm id="202">
+			<out pin="C1"/>
+		</pwm>
+	</device>
+</hausbus>
