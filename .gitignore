@@ -5,3 +5,6 @@
 
 # auto generated code
 src/lib/handler.h
+
+# python stuff
+config-creator/env
