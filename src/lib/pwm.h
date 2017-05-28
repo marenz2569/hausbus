@@ -25,6 +25,8 @@ void pwm_init(void);
 
 void pwm_handler(void);
 
+void pwm_status(void);
+
 void pwm_set(const uint32_t id, const uint8_t sub, const uint8_t value);
 
 void pwm_lock_set(const uint32_t id, const uint8_t sub, const uint8_t value);
