@@ -10,7 +10,8 @@
 #endif
 
 #define ID(a)
-#define ENTRY(a, b, c) volatile uint8_t pwm_ ## b ## c;
+#define ENTRY(a, b, c) uint8_t pwm_ ## b ## c; \
+                       uint8_t pwm_ ## b ## c_safe;
 	PWM_TABLE
 #undef ENTRY
 #undef ID
@@ -21,10 +22,11 @@ struct {
 	struct {
 		volatile uint8_t * port;
 		uint8_t pin;
-		volatile uint8_t * value;
+		uint8_t * value;
+		uint8_t * value_safe;
 	} sub[6];
 } pwm_handlermap[] = {
-#define ID(a) { .id = a, .sub = {{ NULL, 0, NULL }} }
+#define ID(a) { .id = a, .sub = {{ NULL, 0, NULL, NULL }} }
 #define ENTRY(a, b, c)
 	PWM_TABLE
 #undef ENTRY
@@ -41,104 +43,54 @@ struct {
 						 }
 #define SMAP_END }
 
-volatile uint8_t pwm_timemap[ 1
-#define ID(a)
-#define ENTRY(a, b, c) + 1
-	PWM_TABLE
-#undef ENTRY
-#undef ID
-];
-
 void pwm_init(void)
 {
 	size_t i = 0;
 
 #define ID(a) i++;
 #define ENTRY(a, b, c) DDR ## b |= _BV(DD ## b ## c); \
+                       PORT ## b &= ~_BV(PORT ## b ## c); \
                        pwm_handlermap[i-1].sub[a].port = &PORT ## b; \
+                       pwm_handlermap[i-1].sub[a].pin = PORT ## b ## c; \
                        pwm_handlermap[i-1].sub[a].value = &pwm_ ## b ## c; \
-                       *pwm_handlermap[i-1].sub[a].value = 0;
+                       pwm_handlermap[i-1].sub[a].value_safe = &pwm_ ## b ## c_safe; \
+                       *pwm_handlermap[i-1].sub[a].value = 0; \
+                       *pwm_handlermap[i-1].sub[a].value_safe = 0;
 	PWM_TABLE
 #undef ENTRY
 #undef ID
 
-	/* setup timer 2, div 1024 prescaler, ctc, compare match a, total f ~= 610Hz */
+	/* setup timer 2, div 32 prescaler, ctc, compare match a, total f = ~2kHz */
 	OCR2A = 0;
 	TIMSK2 = _BV(OCIE2A);
 	TCCR2A = _BV(WGM21);
-	TCCR2B = _BV(CS22) | _BV(CS21) | _BV(CS20);
-}
-
-static void pwm_order(void)
-{
-	size_t i, j;
-	uint8_t tmp;
-
-	/* copy to pwm_timetable from pwm_handlermap struct */
-	MAP
-		SMAP
-			pwm_timemap[i] = *EL.sub[j].value;
-		SMAP_END
-	MAP_END
-	pwm_timemap[sizeof(pwm_timemap)/sizeof(*pwm_timemap)-1] = 255;
-
-	/* sort from left to right */
-	for (i=1; i<sizeof(pwm_timemap)/sizeof(*pwm_timemap); i++) {
-		for (j=1; j<sizeof(pwm_timemap)/sizeof(*pwm_timemap); j++) {
-			if (pwm_timemap[j-1] > pwm_timemap[j]) {
-				tmp = pwm_timemap[j-1];
-				pwm_timemap[j-1] = pwm_timemap[j];
-				pwm_timemap[j] = tmp;
-			}
-		}
-	}
-
-	/* calculate the differeneces between the times */
-	for (i=sizeof(pwm_timemap)/sizeof(*pwm_timemap) - 1; i>1; i--) {
-		pwm_timemap[i] = pwm_timemap[i] - pwm_timemap[i-1];
-	}
+	TCCR2B = _BV(CS21) | _BV(CS20);
 }
 
 ISR(TIMER2_COMPA_vect)
 {
-	static size_t pos = 0;
 	static uint8_t val = 0;
-
 	size_t i, j;
 
-	/* reset and order */
-	if (0 == (val %= 255)) {
-		pwm_order();
-
-		/* switch on all outputs if they are not equal to 0 */
-		MAP
-			SMAP
+	MAP
+		SMAP
+			if (SEL.port == NULL) {
+				continue;
+			}
+			if (val == 0) {
+				memcpy(EL.sub[j].value, EL.sub[j].value_safe, sizeof(*EL.sub[j].value));
 				if (*SEL.value != 0) {
 					*SEL.port |= _BV(SEL.pin);
 				}
-			SMAP_END
-		MAP_END
-	}
-
-	/* ignore the next times if they are equal to 0 */
-	for (; pos<sizeof(pwm_timemap)/sizeof(*pwm_timemap); pos++) {
-		if (0 == pos) {
-			continue;
-		}
-		/* set next time values */
-		OCR2A = pwm_timemap[pos];
-		val += pwm_timemap[pos];
-		break;
-	}
-
-	/* switch off outputs if they have the current value */
-	MAP
-		SMAP
-		if (*SEL.value == val) {
-			*SEL.port &= ~_BV(SEL.pin);
-		}
+			}
+			if (*SEL.value == val) {
+				*SEL.port &= ~_BV(SEL.pin);
+			}
 		SMAP_END
 	MAP_END
+
+	val++;
+	val %= 255;
 }
 
 void pwm_handler(void)
@@ -161,7 +113,7 @@ void pwm_handler(void)
 				case PWM_SET:
 					if ((EL.lock & _BV(j)) == 0) {
 pwm_set_value:
-						*SEL.value = can_frame.data[j+1];
+						*SEL.value_safe = can_frame.data[j+1];
 					}
 					break;
 				case PWM_LOCK_SET:
