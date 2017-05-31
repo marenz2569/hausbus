@@ -14,11 +14,10 @@ struct {
 	volatile uint32_t lock;
 	struct {
 		volatile uint8_t * port;
-		uint8_t port_old;
 		uint8_t pin;
 	} sub[24];
 } output_handlermap[] = {
-#define ID(a) { .id = a, .lock = 0, .sub = {{ .port = NULL, .port_old = 0, .pin = 0 }} },
+#define ID(a) { .id = a, .lock = 0, .sub = {{ .port = NULL, .pin = 0 }} },
 #define ENTRY(a, b, c)
 	OUTPUT_TABLE
 #undef ENTRY
@@ -35,7 +34,6 @@ void output_init(void)
 #define ID(a) i++;
 #define ENTRY(a, b, c) output_handlermap[i-1].sub[a].port = &PORT ## b; \
                        output_handlermap[i-1].sub[a].pin = PORT ## b ## c; \
-											 output_handlermap[i-1].sub[a].port_old = PORT ## b; \
                        DDR ## b |= _BV(DD ## b ## c); \
                        PORT ## b &= ~_BV(PORT ## b ## c);
 	OUTPUT_TABLE
@@ -68,7 +66,6 @@ void output_handler(void)
 				switch (can_frame.data[0] & ~OUTPUT_MASK) {
 				case OUTPUT_SET:
 					if ((EL.lock & OUTPUT_BIT) == 0) {
-						EL.sub[j].port_old = *EL.sub[j].port;
 output_set_value:
 						if (OUTPUT_BIT_SET(4)) {
 							*EL.sub[j].port |= _BV(EL.sub[j].pin);
@@ -79,11 +76,9 @@ output_set_value:
 					break;
 				case OUTPUT_TOGGLE:
 					if ((EL.lock & OUTPUT_BIT) == 0) {
-						if ((EL.sub[j].port_old ^ *EL.sub[j].port) & _BV(EL.sub[j].pin))  {
-							EL.sub[j].port_old = *EL.sub[j].port;
-							*EL.sub[j].port ^= _BV(EL.sub[j].pin);
-						}
+						*EL.sub[j].port ^= _BV(EL.sub[j].pin);
 					}
+					break;
 				case OUTPUT_LOCK_SET:
 					EL.lock |= OUTPUT_BIT;
 					goto output_set_value;
