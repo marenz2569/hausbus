@@ -61,8 +61,8 @@ def module_button(module, conf):
         el->dimmer.sub = b; \
         el->dimmer.status = START_DIMMING;
 
-	if (!l) {
-		switch (el->shortpress.count) {
+	if (l) {
+		switch (el->count) {
 """
 			for k in i.iterfind("short"):
 				c_node = k.find("code")
@@ -74,7 +74,7 @@ def module_button(module, conf):
 			break;
 		}
 	} else {
-		switch (el->shortpress.count) {
+		switch (el->count) {
 """
 			for k in i.iterfind("long"):
 				c_node = k.find("code")

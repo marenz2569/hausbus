@@ -2,6 +2,7 @@
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
 #include <inttypes.h>
+#include <avr/wdt.h>
 
 #include <mcp2515.h>
 #include "lib/pwm.h"
@@ -12,12 +13,19 @@
 
 int main(void)
 {
+	/* disable watchdog timer */
+	MCUSR &= ~(_BV(WDRF) | _BV(BORF) | _BV(EXTRF) | _BV(PORF));
+	wdt_disable();
+
+	/* module initalization */
 	pwm_init();
 	output_init();
 	button_init();
 	uart_init();
 
   tick_init();
+
+	printf("power on\n");
 
 	/* INT0, low level */
 	EIMSK = _BV(INT0);
@@ -26,6 +34,7 @@ int main(void)
 
 	sei();
 
+	/* power saving mode */
 	set_sleep_mode(SLEEP_MODE_IDLE);
 
 	for (;;) {
@@ -61,13 +70,13 @@ void user_tick_interrupt(void)
 		button_status();
 	}
 
-	if (++b > 20) {
+	if (++b > 10) {
 		b = 0;
 
 		button_tick();
 	}
 
-	if (++c > 9) {
+	if (++c > 16) {
 		c = 0;
 
 		button_dimmer();
