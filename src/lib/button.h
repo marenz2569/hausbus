@@ -32,14 +32,7 @@ struct button_sub {
 		} status;
 	} dimmer;
 	uint8_t status;
-	struct {
-		uint8_t count;
-		uint64_t last_unpress;
-	} shortpress;
-	struct {
-		uint64_t unpress;
-		uint64_t press;
-	} last;
+	uint8_t count;
 	uint64_t sched_time;
 };
 

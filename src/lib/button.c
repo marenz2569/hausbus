@@ -18,7 +18,7 @@ struct {
 	volatile uint32_t lock;
 	struct button_sub sub[24];
 } button_handlermap[] = {
-#define ID(a) { .id = a, .lock = 0, .sub = {{ .port = NULL, .pin = 0, .f = NULL , .dimmer = { .status = NO_DIMMING }, .shortpress = { .count = 0, .last_unpress = 0 } , .last = { .unpress = 0, .press = 0 } , .sched_time = 0 }} },
+#define ID(a) { .id = a, .lock = 0, .sub = {{ .port = NULL, .pin = 0, .f = NULL , .dimmer = { .status = NO_DIMMING }, .count = 0, .sched_time = 0 }} },
 #define ENTRY(a, b, c)
 	BUTTON_TABLE
 #undef ENTRY
@@ -55,15 +55,13 @@ void button_init(void)
 // maybe poll on pinchange interrupt? maybe this is not a good idea, as there is going to be no debouncing
 // normaly open switches are o.k. what about normaly closed ones?
 /* longpress or waiting after a short press terminates a sequence */
-#define LONGPRESS_MIN_DELAY   400
-#define SHORTPRESS_MAX_DELAY  500
+#define PRESS_THRESHOLD       400
 #define INTER_PRESS_MAX_DELAY 500
 
 void button_tick(void)
 {
 	size_t i, j;
 	uint8_t port;
-	uint64_t press_time, shortpress_delay;
 
 	MAP {
 		SMAP {
@@ -72,18 +70,9 @@ void button_tick(void)
 			}
 			if (_BV(j) & EL.lock) {
 				SEL.sched_time = 0;
-				SEL.last.unpress = 0;
-				SEL.last.press = 0;
-				SEL.shortpress.count = 0;
+				SEL.count = 0;
 				SEL.status = _BV(SEL.pin);
 				continue;
-			}
-			if (systick > SEL.sched_time && SEL.sched_time != 0) {
-				SEL.sched_time = 0;
-				SEL.f(&SEL, 0);
-				SEL.last.unpress = 0;
-				SEL.last.press = 0;
-				SEL.shortpress.count = 0;
 			}
 			/* on pin change */
 			port = *SEL.port;
@@ -92,33 +81,20 @@ void button_tick(void)
 				SEL.dimmer.status = NO_DIMMING;
 				/* press */
 				if (SEL.status == 0) {
-					SEL.sched_time = 0;
-					SEL.last.press = systick;
+					SEL.sched_time = systick + PRESS_THRESHOLD;
 				/* unpress */
 				} else {
-					SEL.last.unpress = systick;
-					press_time = SEL.last.unpress - SEL.last.press;
-					if (press_time < LONGPRESS_MIN_DELAY) {
-						SEL.sched_time = SEL.last.unpress + INTER_PRESS_MAX_DELAY;
-						if (SEL.shortpress.count == 0) {
-							SEL.shortpress.last_unpress = SEL.last.unpress;
-						}
-						shortpress_delay = SEL.last.unpress - SEL.shortpress.last_unpress;
-						if (shortpress_delay > SHORTPRESS_MAX_DELAY) {
-							SEL.shortpress.count = 1;
-						} else {
-							SEL.shortpress.count = (uint8_t) (((uint16_t) SEL.shortpress.count + 1) % 256);
-						}
-						SEL.shortpress.last_unpress = SEL.last.unpress;
-					/* execute a long press or set dimmer flag */
-					} else {
-						SEL.sched_time = 0;
-						SEL.f(&SEL, 1);
-						SEL.last.unpress = 0;
-						SEL.last.press = 0;
-						SEL.shortpress.count = 0;
+					if (SEL.sched_time != 0) {
+						SEL.sched_time = systick + INTER_PRESS_MAX_DELAY;
+						SEL.count += SEL.count<UINT8_MAX?1:0;
 					}
 				}
+			}
+			if (systick > SEL.sched_time && SEL.sched_time != 0) {
+				SEL.sched_time = 0;
+				/* 0 on long press and something else on short press */
+				SEL.f(&SEL, SEL.status);
+				SEL.count = 0;
 			}
 		}
 	}
@@ -139,6 +115,7 @@ void button_dimmer(void)
 				continue;
 			case START_DIMMING:
 				PDIM.value = 255;
+				PDIM.status = DIMMING;
 				break;
 			case DIMMING:
 				PDIM.value--;
@@ -150,7 +127,6 @@ void button_dimmer(void)
 			pwm_set(PDIM.id, PDIM.sub, PDIM.value);
 		}
 	}
-
 }
 
 void button_handler(void)
