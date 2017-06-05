@@ -28,6 +28,7 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:hausbus-breakout-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -245,7 +246,7 @@ Text GLabel 4010 3850 2    60   Output ~ 0
 MOSI
 Text GLabel 4010 4050 2    60   Output ~ 0
 SCK
-Text GLabel 4010 3750 2    60   Output ~ 0
+Text GLabel 4010 5850 2    60   Output ~ 0
 SS
 Text GLabel 4010 3550 2    60   Output ~ 0
 CLKO
@@ -447,8 +448,6 @@ Connection ~ 2110 3850
 Connection ~ 2110 3650
 Connection ~ 2110 5750
 Wire Wire Line
-	4010 5850 4520 5850
-Wire Wire Line
 	4520 5750 4010 5750
 Wire Wire Line
 	4010 5650 4520 5650
@@ -476,16 +475,6 @@ Wire Wire Line
 	4220 5150 4220 5050
 Wire Wire Line
 	4220 5050 4520 5050
-Wire Wire Line
-	4010 3650 4870 3650
-Wire Wire Line
-	4870 3650 4870 6070
-Wire Wire Line
-	4870 6070 4450 6070
-Wire Wire Line
-	4450 6070 4450 5950
-Wire Wire Line
-	4450 5950 4520 5950
 $Comp
 L CONN_01X10 P2
 U 1 1 591C5ACA
@@ -603,4 +592,32 @@ F 3 "" H 3750 1700 50  0000 C CNN
 	1    3750 1700
 	0    1    1    0   
 $EndComp
+Wire Wire Line
+	4520 5950 4450 5950
+Wire Wire Line
+	4450 5950 4450 6080
+Wire Wire Line
+	4450 6080 4880 6080
+Wire Wire Line
+	4880 6080 4880 5010
+Wire Wire Line
+	4880 5010 5450 5010
+Wire Wire Line
+	5450 5010 5450 3750
+Wire Wire Line
+	5450 3750 4010 3750
+Wire Wire Line
+	4520 5850 4380 5850
+Wire Wire Line
+	4380 5850 4380 6150
+Wire Wire Line
+	4380 6150 4950 6150
+Wire Wire Line
+	4950 6150 4950 5090
+Wire Wire Line
+	4950 5090 5530 5090
+Wire Wire Line
+	5530 5090 5530 3650
+Wire Wire Line
+	5530 3650 4010 3650
 $EndSCHEMATC
