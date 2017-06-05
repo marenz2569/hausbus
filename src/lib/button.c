@@ -1,5 +1,6 @@
 #include <avr/interrupt.h>
 #include <string.h>
+#include <stdint.h>
 #include <mcp2515.h>
 
 #include "handler.h"
@@ -114,7 +115,7 @@ void button_dimmer(void)
 			case NO_DIMMING:
 				continue;
 			case START_DIMMING:
-				PDIM.value = 255;
+				PDIM.value = UINT8_MAX;
 				PDIM.status = DIMMING;
 				break;
 			case DIMMING:

@@ -23,7 +23,7 @@ struct button_sub {
 	/* dimming may happen after a long press */
 	struct {
 		uint32_t id;
-		uint8_t  sub;
+		uint8_t sub;
 		uint8_t value;
 		enum {
 			NO_DIMMING = 0,
