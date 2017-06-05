@@ -113,7 +113,7 @@ pwm_set_value:
 void pwm_status(void)
 {
 	size_t i, j;
-	uint8_t send_v[7] = {0};
+	uint8_t send_v[5] = {0};
 
 	MAP
 		send_v[0] = EL.lock | PWM_MASK;
@@ -128,9 +128,9 @@ void pwm_status(void)
 
 static void pwm_send(const uint32_t id, const	uint8_t sub, const uint8_t value, const uint8_t op)
 {
-	uint8_t send_v[7] = {0};
+	uint8_t send_v[5] = {0};
 
-	if (sub >= 6) {
+	if (sub >= 4) {
 		return;
 	}
 	send_v[0] = op | (_BV(sub) & PWM_MASK);
