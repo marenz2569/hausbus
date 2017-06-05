@@ -46,6 +46,8 @@ clean:
 	rm -f *.hex *.elf src/*.o $(OBJECTS) $(VOBJECTS) src/lib/handler.h
 
 %.elf: FORCE
+	echo "$(PUR)Copy configs$(NC)"
+	cp -f config/mcp2515/mcp2515_config.h lib/mcp2515/src/mcp2515_config.h
 	echo "$(PUR)Building objects$(NC)"
 	make objects
 	echo "$(PUR)Copying variable include file$(NC)"

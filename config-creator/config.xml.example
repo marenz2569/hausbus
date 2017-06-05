@@ -22,7 +22,7 @@ DIMMER(202, 0);
 			<out pin="C0"/>
 		</output>
 		<pwm id="202">
-			<out pin="C1"/>
+			<out pin="B1"/>
 		</pwm>
 	</device>
 </hausbus>

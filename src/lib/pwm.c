@@ -1,5 +1,7 @@
 #include <avr/interrupt.h>
 #include <string.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <mcp2515.h>
 
 #include "handler.h"
@@ -9,24 +11,12 @@
 #error "PWM_TABLE is not defined."
 #endif
 
-#define ID(a)
-#define ENTRY(a, b, c) uint8_t pwm_ ## b ## c; \
-                       uint8_t pwm_ ## b ## c_safe;
-	PWM_TABLE
-#undef ENTRY
-#undef ID
-
 struct {
 	const uint32_t id;
 	volatile uint8_t lock;
-	struct {
-		volatile uint8_t * port;
-		uint8_t pin;
-		uint8_t * value;
-		uint8_t * value_safe;
-	} sub[6];
+	volatile uint8_t *value[4];
 } pwm_handlermap[] = {
-#define ID(a) { .id = a, .sub = {{ NULL, 0, NULL, NULL }} }
+#define ID(a) { .id = a, .value = { NULL } }
 #define ENTRY(a, b, c)
 	PWM_TABLE
 #undef ENTRY
@@ -36,12 +26,27 @@ struct {
 #define EL pwm_handlermap[i]
 #define MAP for (i=0; i<sizeof(pwm_handlermap)/sizeof(*pwm_handlermap); i++) {
 #define MAP_END }
-#define SEL EL.sub[j]
-#define SMAP for (j=0; j<6; j++) { \
-             if (SEL.value == NULL) { \
+#define SEL EL.value[j]
+#define SMAP for (j=0; j<4; j++) { \
+             if (SEL == NULL) { \
 						   continue; \
 						 }
 #define SMAP_END }
+
+#define reg_D6 OCR0A
+#define reg_D5 OCR0B
+#define reg_B1 OCR1AL
+#define reg_B2 OCR1BL
+
+#define tccr_D6 TCCR0A
+#define tccr_D5 TCCR0A
+#define tccr_B1 TCCR1A
+#define tccr_B2 TCCR1A
+
+#define pin_D6 _BV(COM0A1) | _BV(COM0A0)
+#define pin_D5 _BV(COM0B1) | _BV(COM0B0)
+#define pin_B1 _BV(COM1A1) | _BV(COM1A0)
+#define pin_B2 _BV(COM1B1) | _BV(COM1B0)
 
 void pwm_init(void)
 {
@@ -50,47 +55,20 @@ void pwm_init(void)
 #define ID(a) i++;
 #define ENTRY(a, b, c) DDR ## b |= _BV(DD ## b ## c); \
                        PORT ## b &= ~_BV(PORT ## b ## c); \
-                       pwm_handlermap[i-1].sub[a].port = &PORT ## b; \
-                       pwm_handlermap[i-1].sub[a].pin = PORT ## b ## c; \
-                       pwm_handlermap[i-1].sub[a].value = &pwm_ ## b ## c; \
-                       pwm_handlermap[i-1].sub[a].value_safe = &pwm_ ## b ## c_safe; \
-                       *pwm_handlermap[i-1].sub[a].value = 0; \
-                       *pwm_handlermap[i-1].sub[a].value_safe = 0;
+                       pwm_handlermap[i-1].value[a] = &reg_ ## b ## c; \
+                       tccr_ ## b ## c |= pin_ ## b ## c; \
+                       *pwm_handlermap[i-1].value[a] = 255;
 	PWM_TABLE
 #undef ENTRY
 #undef ID
 
-	/* setup timer 2, div 32 prescaler, ctc, compare match a, total f = ~2kHz */
-	OCR2A = 0;
-	TIMSK2 = _BV(OCIE2A);
-	TCCR2A = _BV(WGM21);
-	TCCR2B = _BV(CS21) | _BV(CS20);
-}
-
-ISR(TIMER2_COMPA_vect)
-{
-	static uint8_t val = 0;
-	size_t i, j;
-
-	MAP
-		SMAP
-			if (SEL.port == NULL) {
-				continue;
-			}
-			if (val == 0) {
-				memcpy(EL.sub[j].value, EL.sub[j].value_safe, sizeof(*EL.sub[j].value));
-				if (*SEL.value != 0) {
-					*SEL.port |= _BV(SEL.pin);
-				}
-			}
-			if (*SEL.value == val) {
-				*SEL.port &= ~_BV(SEL.pin);
-			}
-		SMAP_END
-	MAP_END
-
-	val++;
-	val %= 255;
+	/* div 64 prescaler, fast pwm, f = ~1kHz */
+	/* setup timer 0 */
+	TCCR0A |= _BV(WGM01) | _BV(WGM00);
+	TCCR0B = _BV(CS01) | _BV(CS00);
+	/* setup timer 1 */
+	TCCR1A |= _BV(WGM10);
+	TCCR1B = _BV(WGM12) | _BV(CS11) | _BV(CS10);
 }
 
 void pwm_handler(void)
@@ -113,7 +91,7 @@ void pwm_handler(void)
 				case PWM_SET:
 					if ((EL.lock & _BV(j)) == 0) {
 pwm_set_value:
-						*SEL.value_safe = can_frame.data[j+1];
+						*SEL = 255 - can_frame.data[j+1];
 					}
 					break;
 				case PWM_LOCK_SET:
@@ -140,7 +118,7 @@ void pwm_status(void)
 	MAP
 		send_v[0] = EL.lock | PWM_MASK;
 		SMAP
-			send_v[1+j] = *SEL.value;
+			send_v[1+j] = *SEL;
 		SMAP_END
 		while (can_tx_busy())
 			;

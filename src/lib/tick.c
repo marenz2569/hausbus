@@ -6,12 +6,12 @@ void tick_init(void)
 {
 	/* set up an interrupt every 1ms */
 	systick = 0;
-	OCR0A = 249;
-	TIMSK0 = _BV(OCIE0A);
-	TCCR0B = _BV(CS01) | _BV(CS00);
+	OCR2A = 249;
+	TIMSK2 = _BV(OCIE2A);
+	TCCR2B = _BV(CS21) | _BV(CS20);
 }
 
-ISR(TIMER0_COMPA_vect)
+ISR(TIMER2_COMPA_vect)
 {
 	TCNT0 = 0;
 

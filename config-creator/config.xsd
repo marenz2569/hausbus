@@ -5,6 +5,7 @@
 	<xsi:simpleType name="pins">
 		<xsi:restriction base="xsi:string">
 			<xsi:enumeration value="B1"/>
+			<xsi:enumeration value="B2"/>
 			<xsi:enumeration value="C0"/>
 			<xsi:enumeration value="C1"/>
 			<xsi:enumeration value="C2"/>
@@ -18,7 +19,15 @@
 			<xsi:enumeration value="D4"/>
 			<xsi:enumeration value="D5"/>
 			<xsi:enumeration value="D6"/>
-			<xsi:enumeration value="D7"/>
+		</xsi:restriction>
+	</xsi:simpleType>
+
+	<xsi:simpleType name="pwmpins">
+		<xsi:restriction base="xsi:string">
+			<xsi:enumeration value="B1"/>
+			<xsi:enumeration value="B2"/>
+			<xsi:enumeration value="D5"/>
+			<xsi:enumeration value="D6"/>
 		</xsi:restriction>
 	</xsi:simpleType>
 
@@ -78,9 +87,9 @@
 							<xsi:element name="pwm" minOccurs="0" maxOccurs="unbounded">
 								<xsi:complexType>
 									<xsi:choice maxOccurs="unbounded">
-										<xsi:element name="out" minOccurs="1" maxOccurs="7">
+										<xsi:element name="out" minOccurs="1" maxOccurs="4">
 											<xsi:complexType>
-												<xsi:attribute name="pin" type="pins" use="required"/>
+												<xsi:attribute name="pin" type="pwmpins" use="required"/>
 											</xsi:complexType>
 										</xsi:element>
 									</xsi:choice>
