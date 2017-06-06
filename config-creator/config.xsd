@@ -12,7 +12,6 @@
 			<xsi:enumeration value="C3"/>
 			<xsi:enumeration value="C4"/>
 			<xsi:enumeration value="C5"/>
-			<xsi:enumeration value="C6"/>
 			<xsi:enumeration value="D0"/>
 			<xsi:enumeration value="D1"/>
 			<xsi:enumeration value="D3"/>
@@ -40,7 +39,6 @@
 			<xsi:enumeration value="C3"/>
 			<xsi:enumeration value="C4"/>
 			<xsi:enumeration value="C5"/>
-			<xsi:enumeration value="C6"/>
 			<xsi:enumeration value="D0"/>
 			<xsi:enumeration value="D1"/>
 			<xsi:enumeration value="D3"/>
