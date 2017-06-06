@@ -80,7 +80,7 @@ void pwm_handler(void)
 	MAP
 		id = can_std_id(EL.id);
 		if(0 == memcmp(&addr, &id, 4)) {
-			if (can_is_extended || can_get_len != 7) {
+			if (can_is_extended || can_get_len != 5) {
 				return;
 			}
 			if ((can_frame.data[0] & PWM_MASK) == 0) {
