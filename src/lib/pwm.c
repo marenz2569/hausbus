@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <avr/eeprom.h>
 #include <mcp2515.h>
 
 #include "handler.h"
@@ -11,12 +12,21 @@
 #error "PWM_TABLE is not defined."
 #endif
 
+#define ID(a)
+#define ENTRY(a, b, c) uint8_t EEMEM pwm_ ## b ## c ## _safe = 255;
+	PWM_TABLE
+#undef ENTRY
+#undef ID
+
 struct {
 	const uint32_t id;
 	volatile uint8_t lock;
-	volatile uint8_t *value[4];
+	struct {
+		volatile uint8_t *value;
+		uint8_t *value_safe;
+	} sub[4];
 } pwm_handlermap[] = {
-#define ID(a) { .id = a, .value = { NULL } }
+#define ID(a) { .id = a, .sub = {{ .value = NULL, .value_safe = NULL }} }
 #define ENTRY(a, b, c)
 	PWM_TABLE
 #undef ENTRY
@@ -26,9 +36,9 @@ struct {
 #define EL pwm_handlermap[i]
 #define MAP for (i=0; i<sizeof(pwm_handlermap)/sizeof(*pwm_handlermap); i++) {
 #define MAP_END }
-#define SEL EL.value[j]
+#define SEL EL.sub[j]
 #define SMAP for (j=0; j<4; j++) { \
-             if (SEL == NULL) { \
+             if (SEL.value == NULL) { \
 						   continue; \
 						 }
 #define SMAP_END }
@@ -55,9 +65,10 @@ void pwm_init(void)
 #define ID(a) i++;
 #define ENTRY(a, b, c) DDR ## b |= _BV(DD ## b ## c); \
                        PORT ## b &= ~_BV(PORT ## b ## c); \
-                       pwm_handlermap[i-1].value[a] = &reg_ ## b ## c; \
+                       pwm_handlermap[i-1].sub[a].value = &reg_ ## b ## c; \
+											 pwm_handlermap[i-1].sub[a].value_safe = &pwm_ ## b ## c ## _safe; \
                        tccr_ ## b ## c |= pin_ ## b ## c; \
-                       *pwm_handlermap[i-1].value[a] = 255;
+                       *pwm_handlermap[i-1].sub[a].value = eeprom_read_byte(pwm_handlermap[i-1].sub[a].value_safe);
 	PWM_TABLE
 #undef ENTRY
 #undef ID
@@ -91,7 +102,8 @@ void pwm_handler(void)
 				case PWM_SET:
 					if ((EL.lock & _BV(j)) == 0) {
 pwm_set_value:
-						*SEL = 255 - can_frame.data[j+1];
+						*SEL.value = 255 - can_frame.data[j+1];
+						eeprom_write_byte(SEL.value_safe, *SEL.value);
 					}
 					break;
 				case PWM_LOCK_SET:
@@ -118,7 +130,7 @@ void pwm_status(void)
 	MAP
 		send_v[0] = EL.lock | PWM_MASK;
 		SMAP
-			send_v[1+j] = *SEL;
+			send_v[1+j] = *SEL.value;
 		SMAP_END
 		while (can_tx_busy())
 			;

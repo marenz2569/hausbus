@@ -1,5 +1,6 @@
 #include <avr/interrupt.h>
 #include <string.h>
+#include <avr/eeprom.h>
 #include <mcp2515.h>
 
 #include "handler.h"
@@ -9,15 +10,22 @@
 #error "OUTPUT_TABLE is not defined."
 #endif
 
+#define ID(a)
+#define ENTRY(a, b, c) uint8_t EEMEM pin_ ## b ## c ## _safe = 0;
+	OUTPUT_TABLE
+#undef ENTRY
+#undef ID
+
 struct {
 	const uint32_t id;
 	volatile uint32_t lock;
 	struct {
 		volatile uint8_t * port;
 		uint8_t pin;
+		uint8_t *pin_safe;
 	} sub[24];
 } output_handlermap[] = {
-#define ID(a) { .id = a, .lock = 0, .sub = {{ .port = NULL, .pin = 0 }} },
+#define ID(a) { .id = a, .lock = 0, .sub = {{ .port = NULL, .pin = 0, .pin_safe = NULL }} },
 #define ENTRY(a, b, c)
 	OUTPUT_TABLE
 #undef ENTRY
@@ -34,8 +42,9 @@ void output_init(void)
 #define ID(a) i++;
 #define ENTRY(a, b, c) output_handlermap[i-1].sub[a].port = &PORT ## b; \
                        output_handlermap[i-1].sub[a].pin = PORT ## b ## c; \
+											 output_handlermap[i-1].sub[a].pin_safe = &pin_ ## b ## c ## _safe; \
                        DDR ## b |= _BV(DD ## b ## c); \
-                       PORT ## b &= ~_BV(PORT ## b ## c);
+											 PORT ## b = (PORT ## b & ~_BV(PORT ## b ## c)) | eeprom_read_byte(output_handlermap[i-1].sub[a].pin_safe);
 	OUTPUT_TABLE
 #undef ENTRY
 #undef ID
@@ -72,11 +81,13 @@ output_set_value:
 						} else {
 							*EL.sub[j].port &= ~_BV(EL.sub[j].pin);
 						}
+						eeprom_write_byte(EL.sub[j].pin_safe, *EL.sub[j].port & _BV(EL.sub[j].pin));
 					}
 					break;
 				case OUTPUT_TOGGLE:
 					if ((EL.lock & OUTPUT_BIT) == 0) {
 						*EL.sub[j].port ^= _BV(EL.sub[j].pin);
+						eeprom_write_byte(EL.sub[j].pin_safe, *EL.sub[j].port & _BV(EL.sub[j].pin));
 					}
 					break;
 				case OUTPUT_LOCK_SET:
