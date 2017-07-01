@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+
+XSD="config.xsd"
+XSLT="config.xslt"
+
+if [[ ${#} -ne 1 ]] {
+	print "Usage: $0 [XML Configuration file]"
+	exit -1
+}
+
+xmllint $1 --schema $XSD > /dev/null
+if [[ ${?} -ne 0 ]] {
+	print "$1 does not validate"
+	exit -1
+}
+
+java -jar /home/marenz/Downloads/saxon9.8/saxon9he.jar $1 $XSLT > /dev/null
+if [[ ${?} -ne 0 ]] {
+	print "Error processing stylesheet"
+	exit -1
+}
