@@ -5,3 +5,5 @@
 
 # auto generated code
 src/lib/handler.h
+src/*.c
+src/*.h
