@@ -5,11 +5,11 @@
 #include <avr/wdt.h>
 
 #include <mcp2515.h>
-#include "lib/pwm.h"
-#include "lib/output.h"
-#include "lib/button.h"
-#include "lib/tick.h"
-#include "lib/uart.h"
+#include <lib/pwm.h>
+#include <lib/output.h>
+#include <lib/button.h>
+#include <lib/tick.h>
+#include <lib/uart.h>
 
 int main(void)
 {

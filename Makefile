@@ -7,12 +7,12 @@ VOBJECTS   = src/lib/output.o src/lib/pwm.o src/lib/button.o
 # clockout at PORTB0
 FUSES      = -U lfuse:w:0xbe:m -U hfuse:w:0xd9:m -U efuse:w:0x07:m
 
-TARGETS = $(shell ls src/*.c)
-override _TARGETS = $(basename $(notdir $(TARGETS)))
+TARGETS = $(shell ls src/*.c examples/*.c)
+override _TARGETS = $(basename $(TARGETS))
 
 LIB =
 LIBINCLUDE =
-INCLUDE = -Ilib/mcp2515/src
+INCLUDE = -Ilib/mcp2515/src -Isrc
 FLAGS = $(LIB) $(LIBINCLUDE) $(INCLUDE) -ffunction-sections -fdata-sections
 
 AVRDUDE = avrdude -p$(DEVICE)
@@ -43,7 +43,7 @@ fuse:
 	sudo $(AVRDUDE) -cusbasp $(FUSES)
 
 clean:
-	rm -f *.hex *.elf src/*.o $(OBJECTS) $(VOBJECTS) src/lib/handler.h
+	rm -f src/*.hex examples/*.hex src/*.elf examples/*.elf src/*.o examples/*.o $(OBJECTS) $(VOBJECTS) src/lib/handler.h
 
 %.elf: FORCE
 	echo "$(PUR)Copy configs$(NC)"
@@ -51,13 +51,13 @@ clean:
 	echo "$(PUR)Building objects$(NC)"
 	make objects
 	echo "$(PUR)Copying variable include file$(NC)"
-	cp -f src/$(basename $@).h src/lib/handler.h
+	cp -f $(basename $@).h src/lib/handler.h
 	echo "$(PUR)Building main file$(NC)"
-	make --always-make src/$(basename $@).o
+	make --always-make $(basename $@).o
 	echo "$(PUR)Building objects files with variable includes$(NC)"
 	make --always-make $(VOBJECTS)
 	echo "$(PUR)Building $(basename $@) binary$(NC)"
-	$(COMPILE) -std=gnu99 -Wl,-gc-sections -o $@ $(OBJECTS) src/$(basename $@).o $(VOBJECTS)
+	$(COMPILE) -std=gnu99 -Wl,-gc-sections -o $@ $(OBJECTS) $(basename $@).o $(VOBJECTS)
 
 %.hex: %.elf
 	rm -f $@
