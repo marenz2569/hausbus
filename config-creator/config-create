@@ -14,7 +14,7 @@ if [[ ${?} -ne 0 ]] {
 	exit -1
 }
 
-java -jar /home/marenz/Downloads/saxon9.8/saxon9he.jar $1 $XSLT > /dev/null
+saxon9.8-xslt $1 $XSLT > /dev/null
 if [[ ${?} -ne 0 ]] {
 	print "Error processing stylesheet"
 	exit -1
