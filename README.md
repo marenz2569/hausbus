@@ -1,5 +1,13 @@
 # Hausbus
 
+## Configuration
+
+The configuration xml file is saved in `config-creator/`. Its schema definition is saved in `config-creator/config.xsd`.
+
+To generate the `.c` and `.h` files, saved in `src/` execute `./config-create [configuration file]` in the above mentioned directory.
+
+An example is given in `config-creator/config.xml.example`.
+
 ## Dependencies
 
 * [Saxon 9.8][1]
