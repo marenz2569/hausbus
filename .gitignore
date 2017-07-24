@@ -10,3 +10,6 @@ src/*.h
 
 # config
 config-creator/*.xml
+
+# python stuff
+*/env/*
