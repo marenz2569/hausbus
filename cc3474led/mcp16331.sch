@@ -350,4 +350,5 @@ F 3 "" H 7580 4030 50  0000 C CNN
 $EndComp
 Text Notes 6960 3330 0    60   ~ 0
 V_OUT = 0.8V(R_top1/R_bot1 + 1)
+NoConn ~ 7090 3160
 $EndSCHEMATC
