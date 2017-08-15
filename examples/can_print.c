@@ -42,6 +42,8 @@ int main(void)
 
 	tick_init();
 
+	printf("power on\n");
+
 	/* INT0, low level */
 	EIMSK = _BV(INT0);
 	
