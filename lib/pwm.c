@@ -12,8 +12,8 @@
 #error "PWM_TABLE is not defined."
 #endif
 
-#define ID(a)
-#define ENTRY(a, b, c) uint8_t EEMEM pwm_ ## b ## c ## _safe = 255;
+#define ID(a) uint8_t EEMEM pwm_lock_ ## a ## _safe = 0;
+#define ENTRY(a, b, c) uint8_t EEMEM pwm_value_ ## b ## c ## _safe = 255;
 	PWM_TABLE
 #undef ENTRY
 #undef ID
@@ -21,6 +21,7 @@
 struct {
 	const uint32_t id;
 	volatile uint8_t lock;
+	uint8_t *lock_safe;
 	struct {
 		volatile uint8_t *value;
 		uint8_t *value_safe;
@@ -62,24 +63,25 @@ void pwm_init(void)
 {
 	size_t i = 0;
 
-#define ID(a) i++;
+#define ID(a) i++; \
+              pwm_handlermap[i-1].lock_safe = &pwm_lock_ ## a ## _safe;
 #define ENTRY(a, b, c) DDR ## b |= _BV(DD ## b ## c); \
                        PORT ## b &= ~_BV(PORT ## b ## c); \
                        pwm_handlermap[i-1].sub[a].value = &reg_ ## b ## c; \
-											 pwm_handlermap[i-1].sub[a].value_safe = &pwm_ ## b ## c ## _safe; \
+											 pwm_handlermap[i-1].sub[a].value_safe = &pwm_value_ ## b ## c ## _safe; \
                        tccr_ ## b ## c |= pin_ ## b ## c; \
-                       *pwm_handlermap[i-1].sub[a].value = eeprom_read_byte(pwm_handlermap[i-1].sub[a].value_safe);
+                       *pwm_handlermap[i-1].sub[a].value = UINT8_MAX;//eeprom_read_byte(pwm_handlermap[i-1].sub[a].value_safe);
 	PWM_TABLE
 #undef ENTRY
 #undef ID
 
-	/* div 64 prescaler, fast pwm, f = ~1kHz */
+	/* div 64 prescaler, fast pwm, f = ~244Hz */
 	/* setup timer 0 */
 	TCCR0A |= _BV(WGM01) | _BV(WGM00);
-	TCCR0B = _BV(CS01) | _BV(CS00);
+	TCCR0B = _BV(CS02);
 	/* setup timer 1 */
 	TCCR1A |= _BV(WGM10);
-	TCCR1B = _BV(WGM12) | _BV(CS11) | _BV(CS10);
+	TCCR1B = _BV(WGM12) | _BV(CS12);
 }
 
 void pwm_handler(void)
@@ -103,7 +105,7 @@ void pwm_handler(void)
 					if ((EL.lock & _BV(j)) == 0) {
 pwm_set_value:
 						*SEL.value = 255 - can_frame.data[j+1];
-						eeprom_write_byte(SEL.value_safe, *SEL.value);
+						//eeprom_write_byte(SEL.value_safe, *SEL.value);
 					}
 					break;
 				case PWM_LOCK_SET:
@@ -135,6 +137,18 @@ void pwm_status(void)
 		while (can_tx_busy())
 			;
 		can_send(can_std_id(EL.id + 1), sizeof(send_v)/sizeof(*send_v), send_v);
+	MAP_END
+}
+
+void pwm_save(void)
+{
+	size_t i, j;
+
+	MAP
+		eeprom_write_byte(EL.lock_safe, EL.lock);
+		SMAP
+			eeprom_write_byte(SEL.value_safe, *SEL.value);
+		SMAP_END
 	MAP_END
 }
 
