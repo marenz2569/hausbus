@@ -12,4 +12,4 @@ src/*.h
 config-creator/*.xml
 
 # python stuff
-*/env/
+tools/uart_to_vcan/env/
