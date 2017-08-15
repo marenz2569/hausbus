@@ -8,6 +8,10 @@ To generate the `.c` and `.h` files, saved in `src/`, execute `./config-create [
 
 An example is given in `config-creator/config.xml.example`.
 
+## Debugging
+
+- **check the fuses!**
+
 ## Dependencies
 
 * [Saxon 9.8][1]
