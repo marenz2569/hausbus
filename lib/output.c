@@ -10,8 +10,8 @@
 #error "OUTPUT_TABLE is not defined."
 #endif
 
-#define ID(a) uint32_t EEMEM lock_ ## a ## _safe = 0;
-#define ENTRY(a, b, c) uint8_t EEMEM pin_ ## b ## c ## _safe = 0;
+#define ID(a) uint32_t EEMEM output_lock_ ## a ## _safe = 0;
+#define ENTRY(a, b, c) uint8_t EEMEM output_pin_ ## b ## c ## _safe = 0;
 	OUTPUT_TABLE
 #undef ENTRY
 #undef ID
@@ -41,10 +41,10 @@ void output_init(void)
 	size_t i = 0;
 
 #define ID(a) i++; \
-              output_handlermap[i-1].lock_safe = lock_ ## a ## _safe;
+              output_handlermap[i-1].lock_safe = output_lock_ ## a ## _safe;
 #define ENTRY(a, b, c) output_handlermap[i-1].sub[a].port = &PORT ## b; \
                        output_handlermap[i-1].sub[a].pin = PORT ## b ## c; \
-											 output_handlermap[i-1].sub[a].pin_safe = &pin_ ## b ## c ## _safe; \
+											 output_handlermap[i-1].sub[a].pin_safe = &output_pin_ ## b ## c ## _safe; \
                        DDR ## b |= _BV(DD ## b ## c); \
 											 PORT ## b = (PORT ## b & ~_BV(PORT ## b ## c)) ;//| eeprom_read_byte(output_handlermap[i-1].sub[a].pin_safe);
 	OUTPUT_TABLE
