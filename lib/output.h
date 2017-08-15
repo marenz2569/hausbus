@@ -29,6 +29,9 @@ void output_handler(void);
 
 void output_status(void);
 
+/* save the locks and values to eeprom */
+void output_save(void);
+
 void output_set(const uint32_t id, const uint8_t sub, const uint8_t value);
 
 void output_toggle(const uint32_t id, const uint8_t sub);

@@ -10,7 +10,7 @@
 #error "OUTPUT_TABLE is not defined."
 #endif
 
-#define ID(a)
+#define ID(a) uint32_t EEMEM lock_ ## a ## _safe = 0;
 #define ENTRY(a, b, c) uint8_t EEMEM pin_ ## b ## c ## _safe = 0;
 	OUTPUT_TABLE
 #undef ENTRY
@@ -19,13 +19,14 @@
 struct {
 	const uint32_t id;
 	volatile uint32_t lock;
+	uint32_t *lock_safe;
 	struct {
 		volatile uint8_t * port;
 		uint8_t pin;
 		uint8_t *pin_safe;
 	} sub[24];
 } output_handlermap[] = {
-#define ID(a) { .id = a, .lock = 0, .sub = {{ .port = NULL, .pin = 0, .pin_safe = NULL }} },
+#define ID(a) { .id = a, .lock = 0, .lock_safe = NULL .sub = {{ .port = NULL, .pin = 0, .pin_safe = NULL }} },
 #define ENTRY(a, b, c)
 	OUTPUT_TABLE
 #undef ENTRY
@@ -39,12 +40,13 @@ void output_init(void)
 {
 	size_t i = 0;
 
-#define ID(a) i++;
+#define ID(a) i++; \
+              output_handlermap[i-1].lock_safe = lock_ ## a ## _safe;
 #define ENTRY(a, b, c) output_handlermap[i-1].sub[a].port = &PORT ## b; \
                        output_handlermap[i-1].sub[a].pin = PORT ## b ## c; \
 											 output_handlermap[i-1].sub[a].pin_safe = &pin_ ## b ## c ## _safe; \
                        DDR ## b |= _BV(DD ## b ## c); \
-											 PORT ## b = (PORT ## b & ~_BV(PORT ## b ## c)) | eeprom_read_byte(output_handlermap[i-1].sub[a].pin_safe);
+											 PORT ## b = (PORT ## b & ~_BV(PORT ## b ## c)) ;//| eeprom_read_byte(output_handlermap[i-1].sub[a].pin_safe);
 	OUTPUT_TABLE
 #undef ENTRY
 #undef ID
@@ -81,13 +83,11 @@ output_set_value:
 						} else {
 							*EL.sub[j].port &= ~_BV(EL.sub[j].pin);
 						}
-						eeprom_write_byte(EL.sub[j].pin_safe, *EL.sub[j].port & _BV(EL.sub[j].pin));
 					}
 					break;
 				case OUTPUT_TOGGLE:
 					if ((EL.lock & OUTPUT_BIT) == 0) {
 						*EL.sub[j].port ^= _BV(EL.sub[j].pin);
-						eeprom_write_byte(EL.sub[j].pin_safe, *EL.sub[j].port & _BV(EL.sub[j].pin));
 					}
 					break;
 				case OUTPUT_LOCK_SET:
@@ -124,6 +124,18 @@ void output_status(void)
 		while (can_tx_busy())
 			;
 		can_send(can_std_id(EL.id + 1), sizeof(send_v)/sizeof(*send_v), send_v);
+	}
+}
+
+void output_save(void)
+{
+	size_t i, j;
+
+	MAP {
+		eeprom_write_dword(EL.lock_safe, EL.lock);
+		for (j=0; j<24; j++) {
+			eeprom_write_byte(EL.sub[j].pin_safe, *EL.sub[j].port & _BV(EL.sub[j].pin));
+		}
 	}
 }
 
