@@ -26,7 +26,7 @@ struct {
 		uint8_t *pin_safe;
 	} sub[24];
 } output_handlermap[] = {
-#define ID(a) { .id = a, .lock = 0, .lock_safe = NULL .sub = {{ .port = NULL, .pin = 0, .pin_safe = NULL }} },
+#define ID(a) { .id = a, .lock = 0, .lock_safe = NULL, .sub = {{ .port = NULL, .pin = 0, .pin_safe = NULL }} },
 #define ENTRY(a, b, c)
 	OUTPUT_TABLE
 #undef ENTRY
@@ -41,7 +41,7 @@ void output_init(void)
 	size_t i = 0;
 
 #define ID(a) i++; \
-              output_handlermap[i-1].lock_safe = output_lock_ ## a ## _safe;
+              output_handlermap[i-1].lock_safe = &output_lock_ ## a ## _safe;
 #define ENTRY(a, b, c) output_handlermap[i-1].sub[a].port = &PORT ## b; \
                        output_handlermap[i-1].sub[a].pin = PORT ## b ## c; \
 											 output_handlermap[i-1].sub[a].pin_safe = &output_pin_ ## b ## c ## _safe; \
