@@ -105,7 +105,6 @@ void pwm_handler(void)
 					if ((EL.lock & _BV(j)) == 0) {
 pwm_set_value:
 						*SEL.value = 255 - can_frame.data[j+1];
-						//eeprom_write_byte(SEL.value_safe, *SEL.value);
 					}
 					break;
 				case PWM_LOCK_SET:
