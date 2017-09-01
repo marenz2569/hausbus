@@ -24,5 +24,8 @@ DIMMER(202, 0);
 		<pwm id="202">
 			<out pin="B1"/>
 		</pwm>
+		<tick>
+			printf("fancy ticks\n");
+		</tick>
 	</device>
 </hausbus>

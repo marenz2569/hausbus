@@ -33,7 +33,11 @@
 		</xsl:result-document>
 
 		<xsl:result-document href="../src/{@name}.c">
-			<xsl:value-of select="unparsed-text('template.c', 'ascii')"/>
+			<xsl:value-of select="unparsed-text('template-pretick.c', 'utf-8')"/>
+
+			<xsl:value-of select="tick"/>
+
+			<xsl:value-of select="unparsed-text('template-posttick.c', 'utf-8')"/>
 
 			<xsl:for-each select="button">
 				<xsl:for-each select="in">

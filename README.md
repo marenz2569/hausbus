@@ -8,6 +8,13 @@ To generate the `.c` and `.h` files, saved in `src/`, execute `./config-create [
 
 An example is given in `config-creator/config.xml.example`.
 
+## Libraries
+
+- button
+- output
+- pwm
+- tick (Will be executed every 1ms. Do not use variable names a, b and c.)
+
 ## Debugging
 
 - **check the fuses!**
