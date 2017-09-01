@@ -142,6 +142,7 @@
 								</xsi:complexType>
 							</xsi:element>
 							<xsi:element name="tick" type="xsi:string" minOccurs="0" maxOccurs="1"/>
+							<xsi:element name="code" type="xsi:string" minOccurs="0" maxOccurs="1"/>
 						</xsi:choice>
 						<xsi:attribute name="name" type="xsi:string" use="required"/>
 					</xsi:complexType>
