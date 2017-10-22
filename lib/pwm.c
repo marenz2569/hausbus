@@ -100,6 +100,9 @@ void pwm_handler(void)
 				return;
 			}
 			SMAP
+				if ((can_frame.data[0] & _BV(j)) == 0) {
+					continue;
+				}
 				switch (can_frame.data[0] & ~PWM_MASK) {
 				case PWM_SET:
 					if ((EL.lock & _BV(j)) == 0) {
