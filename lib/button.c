@@ -26,10 +26,15 @@ struct {
 #undef ID
 };
 
-#define MAP for (i=0; i<sizeof(button_handlermap)/sizeof(*button_handlermap); i++)
 #define EL button_handlermap[i]
-#define SMAP for (j=0; j<24; j++)
+#define MAP for (i=0; i<sizeof(button_handlermap)/sizeof(*button_handlermap); i++) {
+#define MAP_END }
 #define SEL EL.sub[j]
+#define SMAP for (j=0; j<24; j++) { \
+             	if (SEL.port == NULL) { \
+             		continue; \
+             	}
+#define SMAP_END }
 
 #define ID(a)
 #define ENTRY(a, b, c) extern void button_ ## b ## c(struct button_sub *, uint8_t);
@@ -64,11 +69,8 @@ void button_tick(void)
 	size_t i, j;
 	uint8_t port;
 
-	MAP {
-		SMAP {
-			if (SEL.port == NULL) {
-				continue;
-			}
+	MAP
+		SMAP
 			if (_BV(j) & EL.lock) {
 				SEL.sched_time = 0;
 				SEL.count = 0;
@@ -97,8 +99,8 @@ void button_tick(void)
 				SEL.f(&SEL, SEL.status);
 				SEL.count = 0;
 			}
-		}
-	}
+		SMAP_END
+	MAP_END
 }
 
 void button_dimmer(void)
@@ -106,8 +108,8 @@ void button_dimmer(void)
 #define PDIM SEL.dimmer
 	size_t i, j;
 
-	MAP {
-		SMAP {
+	MAP
+		SMAP
 			if (EL.lock & _BV(j)) {
 				PDIM.status = NO_DIMMING;
 			}
@@ -126,8 +128,8 @@ void button_dimmer(void)
 				break;
 			}
 			pwm_set(PDIM.id, PDIM.sub, PDIM.value);
-		}
-	}
+		SMAP_END
+	MAP_END
 }
 
 void button_handler(void)
@@ -136,7 +138,7 @@ void button_handler(void)
 	uint32_t addr, id;
 
 	addr = can_addr;
-	MAP {
+	MAP
 		id = can_std_id(EL.id);
 		if (0 == memcmp(&addr, &id, 4)) {
 #define BUTTON_MSG_TO_U32(x) ((uint32_t) can_frame.data[x] | (uint32_t) can_frame.data[x+1] << 8 | (uint32_t) can_frame.data[x+2] << 16)
@@ -145,8 +147,8 @@ void button_handler(void)
 			if (can_is_extended || can_get_len != 7 || BUTTON_MSG_TO_U32(1) == 0) {
 				return;
 			}
-			SMAP {
-				if (BUTTON_BIT_SET(1) == 0 || SEL.port == NULL) {
+			SMAP
+				if (BUTTON_BIT_SET(1) == 0) {
 					continue;
 				}
 				switch (can_frame.data[0] & ~BUTTON_MASK) {
@@ -159,9 +161,9 @@ void button_handler(void)
 				default:
 					break;
 				}
-			}
+			SMAP_END
 		}
-	}
+	MAP_END
 }
 
 void button_status(void)
@@ -170,14 +172,14 @@ void button_status(void)
 	uint8_t send_v[3];
 
 #define LOCK_BITS(x) send_v[x] = EL.lock >> (x * 8)
-	MAP {
+	MAP
 		LOCK_BITS(0);
 		LOCK_BITS(1);
 		LOCK_BITS(2);
 		while (can_tx_busy())
 			;
 		can_send(can_std_id(EL.id + 1), sizeof(send_v)/sizeof(*send_v), send_v);
-	}
+	MAP_END
 }
 
 static void button_send(const uint32_t id, const uint8_t sub, const uint8_t value, const uint8_t op)

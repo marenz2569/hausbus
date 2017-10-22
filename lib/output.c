@@ -33,8 +33,15 @@ struct {
 #undef ID
 };
 
-#define MAP for (i=0; i<sizeof(output_handlermap)/sizeof(*output_handlermap); i++)
 #define EL output_handlermap[i]
+#define MAP for (i=0; i<sizeof(output_handlermap)/sizeof(*output_handlermap); i++) {
+#define	MAP_END }
+#define SEL EL.sub[j]
+#define SMAP for (j=0; j<24; j++) { \
+             	if (SEL.port == NULL) { \
+             		continue; \
+             	}
+#define SMAP_END }
 
 void output_init(void)
 {
@@ -58,7 +65,7 @@ void output_handler(void)
 	uint32_t addr, id;
 
 	addr = can_addr;
-	MAP {
+	MAP
 		id = can_std_id(EL.id);
 		if(0 == memcmp(&addr, &id, 4)) {
 			if (can_is_extended || can_get_len != 7) {
@@ -70,8 +77,8 @@ void output_handler(void)
 			if (OUTPUT_MSG_TO_U32(1) == 0) {
 				return;
 			}
-			for (j=0; j<24; j++) {
-				if (OUTPUT_BIT_SET(1) == 0 || EL.sub[j].port == NULL) {
+			SMAP
+				if (OUTPUT_BIT_SET(1) == 0) {
 					continue;
 				}
 				switch (can_frame.data[0] & ~OUTPUT_MASK) {
@@ -101,9 +108,9 @@ output_set_value:
 				default:
 					break;
 				}
-			}
+			SMAP_END
 		}
-	}
+	MAP_END
 }
 
 void output_status(void)
@@ -112,31 +119,31 @@ void output_status(void)
 	uint8_t send_v[6] = {0};
 
 #define LOCK_BITS(x) send_v[x] = EL.lock >> (x * 8)
-	MAP {
+	MAP
 		LOCK_BITS(0);
 		LOCK_BITS(1);
 		LOCK_BITS(2);
-		for (j=0; j<24; j++) {
-			if (*EL.sub[j].port & _BV(EL.sub[j].pin)) {
+		SMAP
+			if (*SEL.port & _BV(SEL.pin)) {
 				send_v[j/8+3] |= _BV(j%8);
 			}
-		}
+		SMAP_END
 		while (can_tx_busy())
 			;
 		can_send(can_std_id(EL.id + 1), sizeof(send_v)/sizeof(*send_v), send_v);
-	}
+	MAP_END
 }
 
 void output_save(void)
 {
 	size_t i, j;
 
-	MAP {
+	MAP
 		eeprom_write_dword(EL.lock_safe, EL.lock);
-		for (j=0; j<24; j++) {
+		SMAP
 			eeprom_write_byte(EL.sub[j].pin_safe, *EL.sub[j].port & _BV(EL.sub[j].pin));
-		}
-	}
+		SMAP_END
+	MAP_END
 }
 
 static void output_send(const uint32_t id, const uint8_t sub, const uint8_t value, const uint8_t op)
