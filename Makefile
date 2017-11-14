@@ -7,7 +7,8 @@ VOBJECTS   = lib/output.o lib/pwm.o lib/button.o
 # clockout at PORTB0
 FUSES      = -U lfuse:w:0xbe:m -U hfuse:w:0xd9:m -U efuse:w:0x07:m
 
-TARGETS = $(shell ls src/*.c examples/*.c)
+USER_FOLDERS = src examples
+TARGETS = $(shell ls $(addsuffix /*.c, $(USER_FOLDERS)))
 override _TARGETS = $(basename $(TARGETS))
 
 LIB =
@@ -16,7 +17,7 @@ INCLUDE = -Ilib/mcp2515/src -I.
 FLAGS = $(LIB) $(LIBINCLUDE) $(INCLUDE) -ffunction-sections -fdata-sections
 
 AVRDUDE = avrdude -p$(DEVICE)
-COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE) -std=gnu99
+COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE) -std=gnu99 -fdump-rtl-expand
 
 PUR = \033[0;35m
 NC = \033[0m
@@ -43,7 +44,7 @@ fuse:
 	sudo $(AVRDUDE) -cusbasp $(FUSES)
 
 clean:
-	rm -f src/*.hex examples/*.hex src/*.elf examples/*.elf src/*.o examples/*.o $(OBJECTS) $(VOBJECTS) lib/handler.h
+	rm -f $(addsuffix /*.hex, $(USER_FOLDERS)) $(addsuffix /*.elf, $(USER_FOLDERS)) $(addsuffix /*.o, $(USER_FOLDERS)) $(addsuffix /*.expand, $(USER_FOLDERS)) $(addsuffix /*.ps, $(USER_FOLDERS)) $(OBJECTS) $(VOBJECTS) lib/handler.h
 
 %.elf: FORCE
 	echo "$(PUR)Copy configs$(NC)"
@@ -56,6 +57,8 @@ clean:
 	make --always-make $(basename $@).o
 	echo "$(PUR)Building objects files with variable includes$(NC)"
 	make --always-make $(VOBJECTS)
+	echo "$(PUR)Building callgraph$(NC)"
+	tools/callgraph/callgraph $(addsuffix .c.192r.expand, $(basename $@ $(OBJECTS) $(VOBJECTS))) --ignore "memcmp|put(s|char)|printf|.+_safe|.+\..+|__.+|uart_output|spi_wrrd|mcp2515_performpgm|can_(frame|tx_busy|rxh)" | dot -Tps > $(basename $@).ps
 	echo "$(PUR)Building $(basename $@) binary$(NC)"
 	$(COMPILE) -std=gnu99 -Wl,-gc-sections -o $@ $(OBJECTS) $(basename $@).o $(VOBJECTS)
 

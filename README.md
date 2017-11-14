@@ -28,6 +28,8 @@ An example is given in `config-creator/config.xml.example`.
 * gcc-avr
 * binutils-avr
 * avr-libc
+* python3
+* graphviz
 
 [1]: https://sourceforge.net/projects/saxon/files/Saxon-HE/
 [2]: http://zsh.sourceforge.org
