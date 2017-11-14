@@ -44,7 +44,7 @@ fuse:
 	sudo $(AVRDUDE) -cusbasp $(FUSES)
 
 clean:
-	rm -f $(addsuffix /*.hex, $(USER_FOLDERS)) $(addsuffix /*.elf, $(USER_FOLDERS)) $(addsuffix /*.o, $(USER_FOLDERS)) $(addsuffix /*.expand, $(USER_FOLDERS)) $(addsuffix /*.ps, $(USER_FOLDERS)) $(OBJECTS) $(VOBJECTS) lib/handler.h
+	rm -f $(addsuffix /*.hex, $(USER_FOLDERS)) $(addsuffix /*.elf, $(USER_FOLDERS)) $(addsuffix *.o, $(dir $(OBJECTS) $(VOBJECTS) $(USER_FOLDERS))) $(addsuffix *.expand, $(dir $(OBJECTS) $(VOBJECTS) $(USER_FOLDERS))) $(addsuffix /*.ps, $(USER_FOLDERS)) lib/handler.h
 
 %.elf: FORCE
 	echo "$(PUR)Copy configs$(NC)"
