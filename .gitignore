@@ -8,6 +8,7 @@ lib/handler.h
 src/*.c
 src/*.h
 *.expand
+*.ps
 
 # config
 config-creator/*.xml
