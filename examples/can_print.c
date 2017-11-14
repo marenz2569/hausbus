@@ -13,7 +13,7 @@
 #include <lib/uart.h>
 #include <lib/tick.h>
 
-void can_print(void)
+void can_msg_printer(void)
 {
 	uint8_t i;
 
@@ -62,7 +62,7 @@ int main(void)
 
 ISR(INT0_vect)
 {
-	can_rx_handler(&can_print);
+	can_rx_handler(&can_msg_printer);
 }
 
 void user_tick_interrupt(void)
