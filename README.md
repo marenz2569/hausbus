@@ -8,7 +8,7 @@ To generate the `.c` and `.h` files, saved in `src/`, execute `./config-create [
 
 An example is given in `config-creator/config.xml.example`.
 
-## Libraries
+## Functions
 
 - button
 - output

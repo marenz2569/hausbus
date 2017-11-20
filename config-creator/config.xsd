@@ -54,6 +54,7 @@
 		</xsi:choice>
 	</xsi:complexType>
 
+	<!-- allow a maximum of 4 short pulses -->
 	<xsi:complexType name="short0">
 		<xsi:choice minOccurs="1" maxOccurs="unbounded">
 			<xsi:element name="short" type="short1" minOccurs="0" maxOccurs="1"/>
@@ -96,11 +97,19 @@
 	</xsi:simpleType>
 
 	<xsi:element name="hausbus">
+
+		<!-- device list -->
 		<xsi:complexType>
 			<xsi:sequence>
+
+				<!-- device -->
 				<xsi:element name="device" minOccurs="0" maxOccurs="unbounded">
+
+					<!-- function list -->
 					<xsi:complexType>
 						<xsi:choice maxOccurs="unbounded">
+
+							<!-- function pwm -->
 							<xsi:element name="pwm" minOccurs="0" maxOccurs="unbounded">
 								<xsi:complexType>
 									<xsi:choice maxOccurs="unbounded">
@@ -113,6 +122,8 @@
 									<xsi:attribute name="id" type="id" use="required"/>
 								</xsi:complexType>
 							</xsi:element>
+
+							<!-- function output -->
 							<xsi:element name="output" minOccurs="0" maxOccurs="unbounded">
 								<xsi:complexType>
 									<xsi:choice maxOccurs="unbounded">
@@ -125,6 +136,8 @@
 									<xsi:attribute name="id" type="id" use="required"/>
 								</xsi:complexType>
 							</xsi:element>
+
+							<!-- function button -->
 							<xsi:element name="button" minOccurs="0" maxOccurs="unbounded">
 								<xsi:complexType>
 									<xsi:choice maxOccurs="unbounded">
@@ -141,25 +154,39 @@
 									<xsi:attribute name="id" type="id" use="required"/>
 								</xsi:complexType>
 							</xsi:element>
+
+							<!-- function tick -->
 							<xsi:element name="tick" type="xsi:string" minOccurs="0" maxOccurs="1"/>
+
+							<!-- function code -->
 							<xsi:element name="code" type="xsi:string" minOccurs="0" maxOccurs="1"/>
+
 						</xsi:choice>
 						<xsi:attribute name="name" type="xsi:string" use="required"/>
 					</xsi:complexType>
+
+					<!-- pins may only be mapped to one function -->
 					<xsi:unique name="unique-pin">
 						<xsi:selector xpath="*/*"/>
 						<xsi:field xpath="@pin"/>
 					</xsi:unique>
+
 				</xsi:element>
+
 			</xsi:sequence>
 		</xsi:complexType>
+
+		<!-- device names must be unique -->
 		<xsi:unique name="unique-device">
 			<xsi:selector xpath="*"/>
 			<xsi:field xpath="@name"/>
 		</xsi:unique>
+
+		<!-- can bus ids must be unique -->
 		<xsi:unique name="unique-id">
 			<xsi:selector xpath="*/*"/>
 			<xsi:field xpath="@id"/>
 		</xsi:unique>
+
 	</xsi:element>
 </xsi:schema>
