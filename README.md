@@ -10,11 +10,13 @@ An example is given in `config-creator/config.xml.example`.
 
 ## Functions
 
-- button
-- output
-- pwm
-- tick (Will be executed every 1ms. Do not use variable names a, b and c.)
-- code (Add your own function to the c file.)
+function | note | forbidden variable names
+--- | --- | ---
+button || el, i
+output |
+pwm |
+tick | code will be executed every 1ms | a, b, c
+code | add your own functions to the c file
 
 ## Debugging
 
