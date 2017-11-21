@@ -8,7 +8,7 @@ VOBJECTS   = lib/output.o lib/pwm.o lib/button.o
 FUSES      = -U lfuse:w:0xbe:m -U hfuse:w:0xd9:m -U efuse:w:0x07:m
 
 USER_FOLDERS = src examples
-TARGETS = $(shell ls $(addsuffix /*.c, $(USER_FOLDERS)))
+TARGETS = $(shell ls $(addsuffix /*.c, $(USER_FOLDERS)) 2> /dev/null)
 override _TARGETS = $(basename $(TARGETS))
 
 LIB =
@@ -44,7 +44,10 @@ fuse:
 	sudo $(AVRDUDE) -cusbasp $(FUSES)
 
 clean:
-	rm -f $(addsuffix /*.hex, $(USER_FOLDERS)) $(addsuffix /*.elf, $(USER_FOLDERS)) $(addsuffix *.o, $(dir $(OBJECTS) $(VOBJECTS) $(USER_FOLDERS))) $(addsuffix *.expand, $(dir $(OBJECTS) $(VOBJECTS) $(USER_FOLDERS))) $(addsuffix /*.ps, $(USER_FOLDERS)) lib/handler.h
+	rm -f $(addsuffix /*.hex, $(USER_FOLDERS)) $(addsuffix /*.elf, $(USER_FOLDERS)) $(addsuffix *.o, $(dir $(OBJECTS) $(VOBJECTS)) $(addsuffix /, $(USER_FOLDERS))) $(addsuffix *.expand, $(dir $(OBJECTS) $(VOBJECTS)) $(addsuffix /, $(USER_FOLDERS))) $(addsuffix /*.ps, $(USER_FOLDERS)) lib/handler.h
+
+config-clean: clean
+	rm -rf src/*
 
 %.elf: FORCE
 	echo "$(PUR)Copy configs$(NC)"
