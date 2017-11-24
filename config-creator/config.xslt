@@ -65,7 +65,7 @@
 						} else {
 							switch (el->count) {
 					<xsl:for-each select=".//long">
-							case <xsl:value-of select="count(ancestor-or-self::*)-count(ancestor::in[1]/ancestor-or-self::*)"/>:
+							case <xsl:value-of select="count(ancestor-or-self::*)-count(ancestor::in[1]/ancestor-or-self::*)-1"/>:
 								<xsl:value-of select="code"/>
 								break;
 					</xsl:for-each>
