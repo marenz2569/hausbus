@@ -4,9 +4,16 @@
 	<xsl:output method="text" indent="no"/>
 
 	<xsl:template match="device">
+		<!-- default values have to be reimplemented in xslt, because saxon he does not allow xsd validation -->
+		<xsl:variable name="ss"><xsl:choose><xsl:when test="@ss"><xsl:value-of select="@ss"/></xsl:when><xsl:otherwise>D7</xsl:otherwise></xsl:choose></xsl:variable>
+
 		<xsl:result-document href="../src/{@name}.h">
 			#ifndef CONFIG_H__
 			#define CONFIG_H__
+
+			#define MCP2515_CS_DDR DDR<xsl:value-of select="substring($ss, 1, 1)"/>
+			#define MCP2515_CS_PORT PORT<xsl:value-of select="substring($ss, 1, 1)"/>
+			#define MCP2515_CS_PIN PORT<xsl:value-of select="$ss"/>
 
 			#define PWM_TABLE \<xsl:for-each select="pwm">
 				ID(<xsl:value-of select="@id"/>) \

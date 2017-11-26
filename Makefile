@@ -31,8 +31,7 @@ objects: $(OBJECTS)
 %.o:	%.c
 	$(COMPILE) -c $< -o $@ $(FLAGS)
 
-lib/mcp2515/src/mcp2515.o: lib/mcp2515/src/mcp2515_config.h
-lib/output.o lib/pwm.o lib/button.o $(addsuffix .o, $(_TARGETS)): lib/handler.h
+lib/mcp2515/src/mcp2515.o lib/output.o lib/pwm.o lib/button.o $(addsuffix .o, $(_TARGETS)): lib/handler.h
 
 %.ps: %.c
 	tools/callgraph/callgraph $(addsuffix .c.192r.expand, $(basename $@ $(OBJECTS))) --ignore "memcmp|put(s|char)|printf|.+_safe|.+\..+|__.+|uart_output|spi_wrrd|mcp2515_performpgm|can_(frame|tx_busy|rxh)" | dot -Tps > $@
@@ -55,8 +54,7 @@ config-clean: clean
 
 %.elf: FORCE
 	echo "$(PUR)Copy configs$(NC)"
-	cp -f config/mcp2515/mcp2515_config.h lib/mcp2515/src/mcp2515_config.h
-	echo "$(PUR)Copying variable include file$(NC)"
+	cp -f $(basename $@).h lib/mcp2515/src/mcp2515_config.h
 	cp -f $(basename $@).h lib/handler.h
 	echo "$(PUR)Building objects$(NC)"
 	make objects

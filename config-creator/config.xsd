@@ -18,6 +18,7 @@
 			<xsi:enumeration value="D4"/>
 			<xsi:enumeration value="D5"/>
 			<xsi:enumeration value="D6"/>
+			<xsi:enumeration value="D7"/>
 		</xsi:restriction>
 	</xsi:simpleType>
 
@@ -54,33 +55,9 @@
 		</xsi:choice>
 	</xsi:complexType>
 
-	<!-- allow a maximum of 4 short pulses -->
-	<xsi:complexType name="short0">
+	<xsi:complexType name="short">
 		<xsi:choice minOccurs="1" maxOccurs="unbounded">
-			<xsi:element name="short" type="short1" minOccurs="0" maxOccurs="1"/>
-			<xsi:element name="long" type="long" minOccurs="0" maxOccurs="1"/>
-			<xsi:element name="code" type="xsi:string" minOccurs="0" maxOccurs="1"/>
-		</xsi:choice>
-	</xsi:complexType>
-
-	<xsi:complexType name="short1">
-		<xsi:choice minOccurs="1" maxOccurs="unbounded">
-			<xsi:element name="short" type="short2" minOccurs="0" maxOccurs="1"/>
-			<xsi:element name="long" type="long" minOccurs="0" maxOccurs="1"/>
-			<xsi:element name="code" type="xsi:string" minOccurs="0" maxOccurs="1"/>
-		</xsi:choice>
-	</xsi:complexType>
-
-	<xsi:complexType name="short2">
-		<xsi:choice minOccurs="1" maxOccurs="unbounded">
-			<xsi:element name="short" type="short3" minOccurs="0" maxOccurs="1"/>
-			<xsi:element name="long" type="long" minOccurs="0" maxOccurs="1"/>
-			<xsi:element name="code" type="xsi:string" minOccurs="0" maxOccurs="1"/>
-		</xsi:choice>
-	</xsi:complexType>
-
-	<xsi:complexType name="short3">
-		<xsi:choice minOccurs="1" maxOccurs="unbounded">
+			<xsi:element name="short" type="short" minOccurs="0" maxOccurs="1"/>
 			<xsi:element name="long" type="long" minOccurs="0" maxOccurs="1"/>
 			<xsi:element name="code" type="xsi:string" minOccurs="0" maxOccurs="1"/>
 		</xsi:choice>
@@ -120,7 +97,7 @@
 										</xsi:element>
 									</xsi:choice>
 									<xsi:attribute name="id" type="id" use="required"/>
-								</xsi:complexType>
+							</xsi:complexType>
 							</xsi:element>
 
 							<!-- function output -->
@@ -144,7 +121,7 @@
 										<xsi:element name="in" minOccurs="1" maxOccurs="24">
 											<xsi:complexType>
 												<xsi:choice minOccurs="1" maxOccurs="unbounded">
-													<xsi:element name="short" type="short0" minOccurs="0" maxOccurs="1"/>
+													<xsi:element name="short" type="short" minOccurs="0" maxOccurs="1"/>
 													<xsi:element name="long" type="long" minOccurs="0" maxOccurs="1"/>
 												</xsi:choice>
 												<xsi:attribute name="pin" type="inputpins" use="required"/>
@@ -163,12 +140,13 @@
 
 						</xsi:choice>
 						<xsi:attribute name="name" type="xsi:string" use="required"/>
+						<xsi:attribute name="ss" type="outputpins" use="optional" default="D7"/>
 					</xsi:complexType>
 
 					<!-- pins may only be mapped to one function -->
 					<xsi:unique name="unique-pin">
-						<xsi:selector xpath="*/*"/>
-						<xsi:field xpath="@pin"/>
+						<xsi:selector xpath="*/*|."/>
+						<xsi:field xpath="@pin|@ss"/>
 					</xsi:unique>
 
 				</xsi:element>
