@@ -2,7 +2,7 @@
 
 <xsi:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema">
 
-	<xsi:simpleType name="outputpins">
+	<xsi:simpleType name="generalpins">
 		<xsi:restriction base="xsi:string">
 			<xsi:enumeration value="B1"/>
 			<xsi:enumeration value="B2"/>
@@ -26,24 +26,6 @@
 		<xsi:restriction base="xsi:string">
 			<xsi:enumeration value="B1"/>
 			<xsi:enumeration value="B2"/>
-			<xsi:enumeration value="D5"/>
-			<xsi:enumeration value="D6"/>
-		</xsi:restriction>
-	</xsi:simpleType>
-
-	<xsi:simpleType name="inputpins">
-		<xsi:restriction base="xsi:string">
-			<xsi:enumeration value="B1"/>
-			<xsi:enumeration value="C0"/>
-			<xsi:enumeration value="C1"/>
-			<xsi:enumeration value="C2"/>
-			<xsi:enumeration value="C3"/>
-			<xsi:enumeration value="C4"/>
-			<xsi:enumeration value="C5"/>
-			<xsi:enumeration value="D0"/>
-			<xsi:enumeration value="D1"/>
-			<xsi:enumeration value="D3"/>
-			<xsi:enumeration value="D4"/>
 			<xsi:enumeration value="D5"/>
 			<xsi:enumeration value="D6"/>
 		</xsi:restriction>
@@ -106,7 +88,7 @@
 									<xsi:choice maxOccurs="unbounded">
 										<xsi:element name="out" minOccurs="1" maxOccurs="24">
 											<xsi:complexType>
-												<xsi:attribute name="pin" type="outputpins" use="required"/>
+												<xsi:attribute name="pin" type="generalpins" use="required"/>
 											</xsi:complexType>
 										</xsi:element>
 									</xsi:choice>
@@ -124,7 +106,7 @@
 													<xsi:element name="short" type="short" minOccurs="0" maxOccurs="1"/>
 													<xsi:element name="long" type="long" minOccurs="0" maxOccurs="1"/>
 												</xsi:choice>
-												<xsi:attribute name="pin" type="inputpins" use="required"/>
+												<xsi:attribute name="pin" type="generalpins" use="required"/>
 											</xsi:complexType>
 										</xsi:element>
 									</xsi:choice>
@@ -140,7 +122,7 @@
 
 						</xsi:choice>
 						<xsi:attribute name="name" type="xsi:string" use="required"/>
-						<xsi:attribute name="ss" type="outputpins" use="optional" default="D7"/>
+						<xsi:attribute name="ss" type="generalpins" use="optional" default="D7"/>
 					</xsi:complexType>
 
 					<!-- pins may only be mapped to one function -->
