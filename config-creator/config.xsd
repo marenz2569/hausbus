@@ -122,6 +122,9 @@
 							<!-- function code -->
 							<xsi:element name="code" type="xsi:string" minOccurs="0" maxOccurs="1"/>
 
+							<!-- function loop -->
+							<xsi:element name="loop" type="xsi:string" minOccurs="0" maxOccurs="1" default="sleep_mode();"/>
+
 						</xsi:choice>
 						<xsi:attribute name="name" type="xsi:string" use="required"/>
 						<xsi:attribute name="ss" type="generalpins" use="optional" default="D7"/>

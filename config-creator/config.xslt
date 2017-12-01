@@ -6,6 +6,7 @@
 	<xsl:template match="device">
 		<!-- default values have to be reimplemented in xslt, because saxon he does not allow xsd validation -->
 		<xsl:variable name="ss"><xsl:choose><xsl:when test="@ss"><xsl:value-of select="@ss"/></xsl:when><xsl:otherwise>D7</xsl:otherwise></xsl:choose></xsl:variable>
+		<xsl:variable name="loop"><xsl:choose><xsl:when test="loop"><xsl:value-of select="loop"/></xsl:when><xsl:otherwise>sleep_mode();</xsl:otherwise></xsl:choose></xsl:variable>
 
 		<xsl:result-document href="../src/{@name}.h">
 			#ifndef CONFIG_H__
@@ -43,6 +44,10 @@
 			<xsl:value-of select="unparsed-text('template-header.c.part', 'utf-8')"/>
 
 			<xsl:value-of select="code"/>
+
+			<xsl:value-of select="unparsed-text('template-postinit.c.part', 'utf-8')"/>
+
+			<xsl:value-of select="$loop"/>
 
 			<xsl:value-of select="unparsed-text('template-pretick.c.part', 'utf-8')"/>
 
