@@ -12,7 +12,7 @@ An example is given in `config-creator/config.xml.example`.
 
 function | note | forbidden variable names
 --- | --- | ---
-button || el, i
+button || el
 output |
 pwm |
 tick | code will be executed every 1ms | a, b, c
