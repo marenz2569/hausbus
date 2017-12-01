@@ -20,6 +20,8 @@ struct button_sub {
 	uint8_t pin;
 	/* number of shortpress (0 to 255) and longpress (0 or 1) */
 	void (*f) (struct button_sub *);
+	void (*press_f) (struct button_sub *);
+	void (*unpress_f) (struct button_sub *);
 	/* dimming may happen after a long press */
 	struct {
 		uint32_t id;

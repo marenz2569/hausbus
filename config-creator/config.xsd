@@ -105,6 +105,8 @@
 												<xsi:choice minOccurs="1" maxOccurs="unbounded">
 													<xsi:element name="short" type="short" minOccurs="0" maxOccurs="1"/>
 													<xsi:element name="long" type="long" minOccurs="0" maxOccurs="1"/>
+													<xsi:element name="press" type="xsi:string" micOccurs="0" maxOccurs="1"/>
+													<xsi:element name="unpress" type="xsi:string" micOccurs="0" maxOccurs="1"/>
 												</xsi:choice>
 												<xsi:attribute name="pin" type="generalpins" use="required"/>
 											</xsi:complexType>

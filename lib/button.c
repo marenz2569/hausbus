@@ -37,7 +37,9 @@ struct {
 #define SMAP_END }
 
 #define ID(a)
-#define ENTRY(a, b, c) extern void button_ ## b ## c(struct button_sub *);
+#define ENTRY(a, b, c) extern void button_ ## b ## c(struct button_sub *); \
+                       extern void button_press_ ## b ## c(struct button_sub *); \
+                       extern void button_unpress_ ## b ## c(struct button_sub *);
 	BUTTON_TABLE
 #undef ENTRY
 #undef ID
@@ -52,7 +54,9 @@ void button_init(void)
                        button_handlermap[i-1].sub[a].port = &PIN ## b; \
                        button_handlermap[i-1].sub[a].pin = PIN ## b ## c; \
                        button_handlermap[i-1].sub[a].status = PIN ## b & _BV(PIN ## b ## c); \
-                       button_handlermap[i-1].sub[a].f = &button_ ## b ## c;
+                       button_handlermap[i-1].sub[a].f = &button_ ## b ## c; \
+                       button_handlermap[i-1].sub[a].press_f = &button_press_ ## b ## c; \
+                       button_handlermap[i-1].sub[a].unpress_f = &button_unpress_ ## b ## c;
 	BUTTON_TABLE
 #undef ENTRY
 #undef ID
@@ -85,12 +89,14 @@ void button_tick(void)
 				/* press */
 				if (SEL.status == 0) {
 					SEL.sched_time = systick + PRESS_THRESHOLD;
+					SEL.press_f(&SEL);
 				/* unpress */
 				} else {
 					if (SEL.sched_time != 0) {
 						SEL.sched_time = systick + INTER_PRESS_MAX_DELAY;
 						SEL.count += SEL.count<UINT8_MAX?1:0;
 					}
+					SEL.unpress_f(&SEL);
 				}
 			}
 			if (systick > SEL.sched_time && SEL.sched_time != 0) {

@@ -81,6 +81,16 @@
 							}
 						}
 					}
+
+					void button_press_<xsl:value-of select="@pin"/>(struct button_sub *el)
+					{
+						<xsl:value-of select="press"/>
+					}
+
+					void button_unpress_<xsl:value-of select="@pin"/>(struct button_sub *el)
+					{
+						<xsl:value-of select="unpress"/>
+					}
 				</xsl:for-each>
 			</xsl:for-each>
 		</xsl:result-document>
