@@ -52,14 +52,14 @@
 
 			<xsl:for-each select="button">
 				<xsl:for-each select="in">
-					void button_<xsl:value-of select="@pin"/>(struct button_sub *el, uint8_t i)
+					void button_<xsl:value-of select="@pin"/>(struct button_sub *el)
 					{
 						#define DIMMER(a, b) \
 							el->dimmer.id = a; \
 							el->dimmer.sub = b; \
 							el->dimmer.status = START_DIMMING;
 
-						if (i) {
+						if (el->status) {
 							switch (el->count) {
 					<xsl:for-each select=".//short">
 							case <xsl:value-of select="count(ancestor-or-self::*)-count(ancestor::in[1]/ancestor-or-self::*)"/>:

@@ -37,7 +37,7 @@ struct {
 #define SMAP_END }
 
 #define ID(a)
-#define ENTRY(a, b, c) extern void button_ ## b ## c(struct button_sub *, uint8_t);
+#define ENTRY(a, b, c) extern void button_ ## b ## c(struct button_sub *);
 	BUTTON_TABLE
 #undef ENTRY
 #undef ID
@@ -96,7 +96,7 @@ void button_tick(void)
 			if (systick > SEL.sched_time && SEL.sched_time != 0) {
 				SEL.sched_time = 0;
 				/* 0 on long press and something else on short press */
-				SEL.f(&SEL, SEL.status);
+				SEL.f(&SEL);
 				SEL.count = 0;
 			}
 		SMAP_END

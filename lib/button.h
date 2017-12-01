@@ -19,7 +19,7 @@ struct button_sub {
 	volatile uint8_t * port;
 	uint8_t pin;
 	/* number of shortpress (0 to 255) and longpress (0 or 1) */
-	void (*f) (struct button_sub *, uint8_t);
+	void (*f) (struct button_sub *);
 	/* dimming may happen after a long press */
 	struct {
 		uint32_t id;
