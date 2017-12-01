@@ -45,6 +45,10 @@
 
 			<xsl:value-of select="code"/>
 
+			<xsl:value-of select="unparsed-text('template-preinit.c.part', 'utf-8')"/>
+
+			<xsl:value-of select="init"/>
+
 			<xsl:value-of select="unparsed-text('template-postinit.c.part', 'utf-8')"/>
 
 			<xsl:value-of select="$loop"/>

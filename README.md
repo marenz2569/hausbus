@@ -18,6 +18,7 @@ pwm |
 tick | code will be executed every 1ms | a, b, c
 code | add your own functions to the c file
 loop | add your own code to the loop otherwise the controller will be put to idle sleep mode
+init | add your own code to the init
 
 ## Debugging
 
