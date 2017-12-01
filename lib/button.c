@@ -59,7 +59,7 @@ void button_init(void)
 }
 
 // maybe poll on pinchange interrupt? maybe this is not a good idea, as there is going to be no debouncing
-// normaly open switches are o.k. what about normaly closed ones?
+// normally open switches are o.k. what about normally closed ones?
 /* longpress or waiting after a short press terminates a sequence */
 #define PRESS_THRESHOLD       400
 #define INTER_PRESS_MAX_DELAY 500
