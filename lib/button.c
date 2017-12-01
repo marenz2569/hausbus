@@ -20,7 +20,7 @@ struct {
 	struct button_sub sub[24];
 } button_handlermap[] = {
 #define ID(a) { .id = a, .lock = 0, .sub = {{ .port = NULL, .pin = 0, .f = NULL , .dimmer = { .status = NO_DIMMING }, .count = 0, .sched_time = 0 }} },
-#define ENTRY(a, b, c)
+#define ENTRY(a, b, c, d)
 	BUTTON_TABLE
 #undef ENTRY
 #undef ID
@@ -37,9 +37,9 @@ struct {
 #define SMAP_END }
 
 #define ID(a)
-#define ENTRY(a, b, c) extern void button_ ## b ## c(struct button_sub *); \
-                       extern void button_press_ ## b ## c(struct button_sub *); \
-                       extern void button_unpress_ ## b ## c(struct button_sub *);
+#define ENTRY(a, b, c, d) extern void button_ ## b ## c(struct button_sub *); \
+                          extern void button_press_ ## b ## c(struct button_sub *); \
+                          extern void button_unpress_ ## b ## c(struct button_sub *);
 	BUTTON_TABLE
 #undef ENTRY
 #undef ID
@@ -49,21 +49,21 @@ void button_init(void)
 	size_t i = 0;
 
 #define ID(a) i++;
-#define ENTRY(a, b, c) DDR ## b &= ~_BV(DD ## b ## c); \
-                       PORT ## b |= _BV(PORT ## b ## c); \
-                       button_handlermap[i-1].sub[a].port = &PIN ## b; \
-                       button_handlermap[i-1].sub[a].pin = PIN ## b ## c; \
-                       button_handlermap[i-1].sub[a].status = PIN ## b & _BV(PIN ## b ## c); \
-                       button_handlermap[i-1].sub[a].f = &button_ ## b ## c; \
-                       button_handlermap[i-1].sub[a].press_f = &button_press_ ## b ## c; \
-                       button_handlermap[i-1].sub[a].unpress_f = &button_unpress_ ## b ## c;
+#define ENTRY(a, b, c, d) DDR ## b &= ~_BV(DD ## b ## c); \
+                          PORT ## b |= _BV(PORT ## b ## c); \
+                          button_handlermap[i-1].sub[a].port = &PIN ## b; \
+                          button_handlermap[i-1].sub[a].pin = PIN ## b ## c; \
+                          button_handlermap[i-1].sub[a].status = PIN ## b & _BV(PIN ## b ## c); \
+                          button_handlermap[i-1].sub[a].default_state = d; \
+                          button_handlermap[i-1].sub[a].f = &button_ ## b ## c; \
+                          button_handlermap[i-1].sub[a].press_f = &button_press_ ## b ## c; \
+                          button_handlermap[i-1].sub[a].unpress_f = &button_unpress_ ## b ## c;
 	BUTTON_TABLE
 #undef ENTRY
 #undef ID
 }
 
 // maybe poll on pinchange interrupt? maybe this is not a good idea, as there is going to be no debouncing
-// normally open switches are o.k. what about normally closed ones?
 /* longpress or waiting after a short press terminates a sequence */
 #define PRESS_THRESHOLD       400
 #define INTER_PRESS_MAX_DELAY 500
@@ -87,7 +87,7 @@ void button_tick(void)
 				SEL.status = port & _BV(SEL.pin);
 				SEL.dimmer.status = NO_DIMMING;
 				/* press */
-				if (SEL.status == 0) {
+				if (SEL.status == (SEL.default_state?_BV(SEL.pin):0)) {
 					SEL.sched_time = systick + PRESS_THRESHOLD;
 					SEL.press_f(&SEL);
 				/* unpress */

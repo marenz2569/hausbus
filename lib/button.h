@@ -18,6 +18,10 @@ enum {
 struct button_sub {
 	volatile uint8_t * port;
 	uint8_t pin;
+	enum {
+		NO = 0,
+		NC = 1,
+	} default_state;
 	/* number of shortpress (0 to 255) and longpress (0 or 1) */
 	void (*f) (struct button_sub *);
 	void (*press_f) (struct button_sub *);

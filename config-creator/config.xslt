@@ -30,9 +30,9 @@
 				</xsl:for-each>
 			</xsl:for-each>
 
-			#define BUTTON_TABLE \<xsl:for-each select="button">
+			#define BUTTON_TABLE \<xsl:for-each select="button"><xsl:variable name="defaultState"><xsl:choose><xsl:when test="@defaultState"><xsl:value-of select="@defaultState"/></xsl:when><xsl:otherwise>NO</xsl:otherwise></xsl:choose></xsl:variable>
 				ID(<xsl:value-of select="@id"/>) \
-				<xsl:for-each select="in">ENTRY(<xsl:value-of select="position()-1"/>, <xsl:value-of select="substring(@pin, 1, 1)"/>, <xsl:value-of select="substring(@pin, 2, 1)"/>)<xsl:if test="position()&lt;last()"> \
+				<xsl:for-each select="in">ENTRY(<xsl:value-of select="position()-1"/>, <xsl:value-of select="substring(@pin, 1, 1)"/>, <xsl:value-of select="substring(@pin, 2, 1)"/>, <xsl:value-of select="$defaultState"/>)<xsl:if test="position()&lt;last()"> \
 					</xsl:if>
 				</xsl:for-each>
 			</xsl:for-each>

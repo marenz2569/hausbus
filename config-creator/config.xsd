@@ -31,6 +31,13 @@
 		</xsi:restriction>
 	</xsi:simpleType>
 
+	<xsi:simpleType name="buttonState">
+		<xsi:restriction base="xsi:string">
+			<xsi:enumeration value="NO"/>
+			<xsi:enumeration value="NC"/>
+		</xsi:restriction>
+	</xsi:simpleType>
+
 	<xsi:complexType name="long">
 		<xsi:choice>
 			<xsi:element name="code" type="xsi:string" minOccurs="1" maxOccurs="1"/>
@@ -109,6 +116,7 @@
 													<xsi:element name="unpress" type="xsi:string" minOccurs="0" maxOccurs="1"/>
 												</xsi:choice>
 												<xsi:attribute name="pin" type="generalpins" use="required"/>
+												<xsi:attribute name="defaultState" type="buttonState" use="optional" default="NO"/>
 											</xsi:complexType>
 										</xsi:element>
 									</xsi:choice>
