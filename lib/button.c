@@ -78,7 +78,7 @@ void button_tick(void)
 			if (_BV(j) & EL.lock) {
 				SEL.sched_time = 0;
 				SEL.count = 0;
-				SEL.status = _BV(SEL.pin);
+				SEL.status = SEL.default_state?_BV(SEL.pin):0;
 				continue;
 			}
 			/* on pin change */
