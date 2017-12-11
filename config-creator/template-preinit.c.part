@@ -1,5 +1,14 @@
+void can_msg_handler(void)
+{
+	pwm_handler();
+	output_handler();
+	button_handler();
+}
+
 int main(void)
 {
+	uint8_t i;
+
 	/* disable watchdog timer */
 	MCUSR &= ~(_BV(WDRF) | _BV(BORF) | _BV(EXTRF) | _BV(PORF));
 	wdt_disable();

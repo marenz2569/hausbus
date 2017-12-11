@@ -1,3 +1,10 @@
 	sei();
 
 	for (;;) {
+		for (i=0; i<2; i++) {
+			if (can_buffer[i].state == FILLED) {
+				memcpy(&can_frame, can_buffer + i, sizeof(can_frame));
+				can_msg_handler();
+				can_buffer[i].state = FREE;
+			}
+		}

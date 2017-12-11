@@ -3,6 +3,7 @@
 #include <avr/interrupt.h>
 #include <inttypes.h>
 #include <avr/sleep.h>
+#include <string.h>
 
 #include <mcp2515.h>
 #include <mcp2515_defs.h>
@@ -35,6 +36,8 @@ void can_msg_printer(void)
 
 int main(void)
 {
+	uint8_t i;
+
 	pwm_init();
 	output_init();
 	button_init();
@@ -54,6 +57,13 @@ int main(void)
 	set_sleep_mode(SLEEP_MODE_IDLE);
 
 	for (;;) {
+		for (i=0; i<2; i++) {
+			if (can_buffer[i].state == FILLED) {
+				memcpy(&can_frame, can_buffer + i, sizeof(can_frame));
+				can_msg_printer();
+				can_buffer[i].state = FREE;
+			}
+		}
 		sleep_mode();
 	}
 
@@ -62,7 +72,7 @@ int main(void)
 
 ISR(INT0_vect)
 {
-	can_rx_handler(&can_msg_printer);
+	can_rx_handler();
 }
 
 void user_tick_interrupt(void)
