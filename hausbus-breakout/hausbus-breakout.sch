@@ -196,9 +196,9 @@ F 3 "" H 4410 5010 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 7620 1240 2    60   BiDi ~ 0
-CANLOW
+CAN-
 Text GLabel 7620 1140 2    60   BiDi ~ 0
-CANHIGH
+CAN+
 $Comp
 L GND #PWR09
 U 1 1 5820DE03
@@ -221,10 +221,10 @@ F 3 "" H 8760 2900 50  0000 C CNN
 	1    8760 2900
 	0    -1   -1   0   
 $EndComp
-Text GLabel 8880 2390 0    60   BiDi ~ 0
-CANLOW
-Text GLabel 8880 2290 0    60   BiDi ~ 0
-CANHIGH
+Text GLabel 10680 2320 0    60   BiDi ~ 0
+CAN-
+Text GLabel 10680 2220 0    60   BiDi ~ 0
+CAN+
 $Comp
 L R R1
 U 1 1 5820F03F
@@ -237,14 +237,14 @@ F 3 "" H 7220 1850 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 Text GLabel 7070 1850 0    60   BiDi ~ 0
-CANHIGH
+CAN+
 Text GLabel 7370 1850 2    60   BiDi ~ 0
-CANLOW
-Text GLabel 7190 3530 2    60   Input ~ 0
+CAN-
+Text GLabel 7570 3390 2    60   Input ~ 0
 MISO
 Text GLabel 7190 3430 2    60   Output ~ 0
 MOSI
-Text GLabel 7190 3630 2    60   Output ~ 0
+Text GLabel 7590 3700 2    60   Output ~ 0
 SCK
 Text GLabel 7190 5430 2    60   Output ~ 0
 SS
@@ -340,12 +340,12 @@ $EndComp
 $Comp
 L CONN_01X02 P3
 U 1 1 591C34A6
-P 9080 2340
-F 0 "P3" H 9080 2490 50  0000 C CNN
-F 1 "CONN_01X02" V 9180 2340 50  0000 C CNN
-F 2 "RND_Connectors:2_5.08mm" H 9080 2340 50  0001 C CNN
-F 3 "" H 9080 2340 50  0000 C CNN
-	1    9080 2340
+P 10880 2270
+F 0 "P3" H 10880 2420 50  0000 C CNN
+F 1 "CONN_01X02" V 10980 2270 50  0000 C CNN
+F 2 "RND_Connectors:2_5.08mm" H 10880 2270 50  0001 C CNN
+F 3 "" H 10880 2270 50  0000 C CNN
+	1    10880 2270
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -425,17 +425,6 @@ F 3 "" H 8720 4100 50  0000 C CNN
 	1    8720 4100
 	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	4230 3810 4530 3810
-Connection ~ 4390 3810
-Wire Wire Line
-	5290 5230 5290 5430
-Connection ~ 5290 5430
-Wire Wire Line
-	5290 3130 5290 3430
-Connection ~ 5290 3430
-Connection ~ 5290 3230
-Connection ~ 5290 5330
 $Comp
 L CONN_01X10 P2
 U 1 1 591C5ACA
@@ -548,13 +537,6 @@ F 3 "" H 10470 4290 50  0000 C CNN
 	1    10470 4290
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	10470 3610 10470 4290
-Wire Wire Line
-	10470 3710 10620 3710
-Wire Wire Line
-	10620 3610 10470 3610
-Connection ~ 10470 3710
 $Comp
 L AVR-ISP-6 CON1
 U 1 1 597CBC71
@@ -607,8 +589,6 @@ F 3 "" H 8880 1890 50  0000 C CNN
 	1    8880 1890
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	10990 1890 10990 790 
 $Comp
 L RJ45 J1
 U 1 1 597FCB1F
@@ -621,90 +601,17 @@ F 3 "" H 9350 1140 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 8880 1650 0    60   BiDi ~ 0
-CANHIGH
+CAN+
 Text GLabel 8880 1770 0    60   BiDi ~ 0
-CANLOW
-Wire Wire Line
-	9900 790  9900 1890
-Wire Wire Line
-	8880 1650 10090 1650
-Wire Wire Line
-	8880 1770 10190 1770
-Wire Wire Line
-	9100 1590 9100 1770
-Wire Wire Line
-	8880 1890 10990 1890
-Wire Wire Line
-	9000 1650 9000 1590
-Connection ~ 9900 1890
-Wire Wire Line
-	10090 1650 10090 1590
-Connection ~ 9000 1650
-Wire Wire Line
-	10190 1770 10190 1590
-Connection ~ 9100 1770
-Wire Wire Line
-	9200 1590 9200 1890
-Connection ~ 9200 1890
-Wire Wire Line
-	9500 1590 9500 1890
-Connection ~ 9500 1890
-Wire Wire Line
-	10290 1590 10290 1890
-Connection ~ 10290 1890
-Wire Wire Line
-	10590 1590 10590 1890
-Connection ~ 10590 1890
-Wire Notes Line
-	8360 600  11030 600 
-Wire Notes Line
-	11030 600  11030 2610
-Wire Notes Line
-	11030 2610 8360 2610
-Wire Notes Line
-	8360 2610 8360 600 
+CAN-
 Text Notes 11010 2590 2    60   ~ 0
 can\n
-Wire Notes Line
-	11030 2680 9900 2680
-Wire Notes Line
-	9900 2680 9900 3370
-Wire Notes Line
-	9900 3370 11030 3370
-Wire Notes Line
-	11030 3370 11030 2680
 Text Notes 11010 3350 2    60   ~ 0
 programming
-Wire Notes Line
-	9830 2680 9830 3370
-Wire Notes Line
-	9830 3370 8360 3370
-Wire Notes Line
-	8360 3370 8360 2680
-Wire Notes Line
-	8360 2680 9830 2680
 Text Notes 9810 3350 2    60   ~ 0
 power\n
-Wire Notes Line
-	11090 550  11090 4760
-Wire Notes Line
-	11090 550  8280 550 
-Wire Notes Line
-	8280 550  8280 4760
-Wire Notes Line
-	8120 2150 8120 600 
-Wire Notes Line
-	8120 600  5910 600 
-Wire Notes Line
-	5910 2150 8120 2150
 Text Notes 8100 2130 2    60   ~ 0
 transceiver
-Wire Notes Line
-	3380 600  5820 600 
-Wire Notes Line
-	3380 2670 5820 2670
-Wire Notes Line
-	5820 2670 5820 600 
 Text Notes 5800 2650 2    60   ~ 0
 controller
 $Comp
@@ -740,36 +647,12 @@ F 3 "" H 6040 1540 50  0000 C CNN
 	1    6040 1540
 	1    0    0    -1  
 $EndComp
-Wire Notes Line
-	5910 600  5910 2150
-Wire Notes Line
-	3380 600  3380 2670
-Wire Notes Line
-	3300 550  8180 550 
-Wire Notes Line
-	8180 550  8180 2750
-Wire Notes Line
-	8180 2750 3300 2750
-Wire Notes Line
-	3300 2750 3300 550 
 Text Notes 8160 2730 2    60   ~ 0
 can
 Text GLabel 10320 3910 0    60   Output ~ 0
 D0
 Text GLabel 10320 4010 0    60   Input ~ 0
 D1
-Wire Wire Line
-	10320 3910 10620 3910
-Wire Wire Line
-	10620 4010 10320 4010
-Wire Notes Line
-	9900 3450 11030 3450
-Wire Notes Line
-	9900 3450 9900 4530
-Wire Notes Line
-	9900 4530 11030 4530
-Wire Notes Line
-	11030 4530 11030 3450
 Text Notes 11010 4510 2    60   ~ 0
 serial
 Text GLabel 8720 3800 2    60   BiDi ~ 0
@@ -788,14 +671,6 @@ Text GLabel 8720 4300 2    60   BiDi ~ 0
 D3
 Text GLabel 8720 4200 2    60   BiDi ~ 0
 D4
-Wire Notes Line
-	9830 3450 8360 3450
-Wire Notes Line
-	8360 3450 8360 4670
-Wire Notes Line
-	8360 4670 9830 4670
-Wire Notes Line
-	9830 4670 9830 3450
 Text GLabel 7690 4580 2    60   Input ~ 0
 RS
 Text GLabel 7190 3230 2    60   BiDi ~ 0
@@ -855,21 +730,12 @@ F 3 "" H 6190 4230 50  0000 C CNN
 	1    6190 4230
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	7190 4580 7690 4580
-Wire Wire Line
-	7560 4580 7560 4470
-Connection ~ 7560 4580
-Wire Notes Line
-	8280 4760 11090 4760
 Text Notes 11070 4740 2    60   ~ 0
 connectors
 Text GLabel 5290 4580 0    60   Input ~ 0
 ADC7
 Text GLabel 5290 4480 0    60   Input ~ 0
 ADC6
-Wire Notes Line
-	8180 2830 8180 5860
 Text Notes 8160 5840 2    60   ~ 0
 mcu\n
 NoConn ~ 5250 1710
@@ -880,20 +746,332 @@ NoConn ~ 5250 2110
 NoConn ~ 4050 2010
 NoConn ~ 4050 1810
 NoConn ~ 7620 940 
-NoConn ~ 9300 1590
-NoConn ~ 9400 1590
-NoConn ~ 9600 1590
-NoConn ~ 9700 1590
-NoConn ~ 10390 1590
-NoConn ~ 10490 1590
-NoConn ~ 10690 1590
-NoConn ~ 10790 1590
 NoConn ~ 10600 2890
 NoConn ~ 10620 3810
+Wire Wire Line
+	4230 3810 4530 3810
+Connection ~ 4390 3810
+Wire Wire Line
+	5290 5230 5290 5430
+Connection ~ 5290 5430
+Wire Wire Line
+	5290 3130 5290 3430
+Connection ~ 5290 3430
+Connection ~ 5290 3230
+Connection ~ 5290 5330
+Wire Wire Line
+	10470 3610 10470 4290
+Wire Wire Line
+	10470 3710 10620 3710
+Wire Wire Line
+	10620 3610 10470 3610
+Connection ~ 10470 3710
+Wire Wire Line
+	10990 1890 10990 790 
+Wire Wire Line
+	9900 1890 9900 790 
+Wire Wire Line
+	8880 1650 10390 1650
+Wire Wire Line
+	8880 1770 10490 1770
+Wire Wire Line
+	8880 1890 10990 1890
+Connection ~ 9900 1890
+Wire Notes Line
+	8360 600  11030 600 
+Wire Notes Line
+	11030 600  11030 2610
+Wire Notes Line
+	11030 2610 8360 2610
+Wire Notes Line
+	8360 2610 8360 600 
+Wire Notes Line
+	11030 2680 9900 2680
+Wire Notes Line
+	9900 2680 9900 3370
+Wire Notes Line
+	9900 3370 11030 3370
+Wire Notes Line
+	11030 3370 11030 2680
+Wire Notes Line
+	9830 2680 9830 3370
+Wire Notes Line
+	9830 3370 8360 3370
+Wire Notes Line
+	8360 3370 8360 2680
+Wire Notes Line
+	8360 2680 9830 2680
+Wire Notes Line
+	11090 550  11090 4760
+Wire Notes Line
+	11090 550  8280 550 
+Wire Notes Line
+	8280 550  8280 4760
+Wire Notes Line
+	8120 2150 8120 600 
+Wire Notes Line
+	8120 600  5910 600 
+Wire Notes Line
+	5910 2150 8120 2150
+Wire Notes Line
+	3380 600  5820 600 
+Wire Notes Line
+	3380 2670 5820 2670
+Wire Notes Line
+	5820 2670 5820 600 
+Wire Notes Line
+	5910 600  5910 2150
+Wire Notes Line
+	3380 600  3380 2670
+Wire Notes Line
+	3300 550  8180 550 
+Wire Notes Line
+	8180 550  8180 2750
+Wire Notes Line
+	8180 2750 3300 2750
+Wire Notes Line
+	3300 2750 3300 550 
+Wire Wire Line
+	10320 3910 10620 3910
+Wire Wire Line
+	10620 4010 10320 4010
+Wire Notes Line
+	9900 3450 11030 3450
+Wire Notes Line
+	9900 3450 9900 4530
+Wire Notes Line
+	9900 4530 11030 4530
+Wire Notes Line
+	11030 4530 11030 3450
+Wire Notes Line
+	9830 3450 8360 3450
+Wire Notes Line
+	8360 3450 8360 4670
+Wire Notes Line
+	8360 4670 9830 4670
+Wire Notes Line
+	9830 4670 9830 3450
+Wire Wire Line
+	7190 4580 7690 4580
+Wire Wire Line
+	7560 4580 7560 4470
+Connection ~ 7560 4580
+Wire Notes Line
+	8280 4760 11090 4760
+Wire Notes Line
+	8180 2830 8180 5860
 Wire Notes Line
 	3300 2830 8180 2830
 Wire Notes Line
 	3300 2830 3300 5860
 Wire Notes Line
 	3300 5860 8180 5860
+Wire Wire Line
+	9300 1590 9300 1650
+Connection ~ 9300 1650
+Wire Wire Line
+	9400 1590 9400 1770
+Connection ~ 9400 1770
+Wire Wire Line
+	9600 1590 9600 1890
+Connection ~ 9600 1890
+Wire Wire Line
+	9700 1590 9700 1890
+Connection ~ 9700 1890
+Wire Wire Line
+	10390 1650 10390 1590
+Wire Wire Line
+	10490 1770 10490 1590
+Wire Wire Line
+	10790 1590 10790 1890
+Connection ~ 10790 1890
+Wire Wire Line
+	10690 1590 10690 1890
+Connection ~ 10690 1890
+$Comp
+L LT3010-5 U3
+U 1 1 5A048532
+P 9050 5200
+F 0 "U3" H 8800 5450 50  0000 C CNN
+F 1 "LT3010-5" H 9050 5450 50  0000 L CNN
+F 2 "Housings_SSOP:MSOP-8-1EP_3x3mm_Pitch0.65mm" H 9050 5525 50  0001 C CNN
+F 3 "" H 9050 5200 50  0001 C CNN
+	1    9050 5200
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCOM #PWR027
+U 1 1 5A0492CF
+P 9000 2050
+F 0 "#PWR027" H 9000 1900 50  0001 C CNN
+F 1 "VCOM" H 9000 2200 50  0000 C CNN
+F 2 "" H 9000 2050 50  0001 C CNN
+F 3 "" H 9000 2050 50  0001 C CNN
+	1    9000 2050
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	9000 1590 9000 2050
+Wire Wire Line
+	9100 1590 9100 2000
+Wire Wire Line
+	9000 2000 10190 2000
+Connection ~ 9000 2000
+Wire Wire Line
+	10090 2000 10090 1590
+Connection ~ 9100 2000
+Wire Wire Line
+	10190 2000 10190 1590
+Connection ~ 10090 2000
+NoConn ~ 10590 1590
+NoConn ~ 10290 1590
+NoConn ~ 9500 1590
+NoConn ~ 9200 1590
+$Comp
+L VCOM #PWR028
+U 1 1 5A04A89C
+P 8410 5000
+F 0 "#PWR028" H 8410 4850 50  0001 C CNN
+F 1 "VCOM" H 8410 5150 50  0000 C CNN
+F 2 "" H 8410 5000 50  0001 C CNN
+F 3 "" H 8410 5000 50  0001 C CNN
+	1    8410 5000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8410 5100 8650 5100
+$Comp
+L GND #PWR029
+U 1 1 5A04A9A3
+P 9050 5620
+F 0 "#PWR029" H 9050 5370 50  0001 C CNN
+F 1 "GND" H 9050 5470 50  0000 C CNN
+F 2 "" H 9050 5620 50  0001 C CNN
+F 3 "" H 9050 5620 50  0001 C CNN
+	1    9050 5620
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9050 5500 9050 5620
+$Comp
+L +5V #PWR030
+U 1 1 5A04ACE8
+P 9710 5000
+F 0 "#PWR030" H 9710 4850 50  0001 C CNN
+F 1 "+5V" H 9710 5140 50  0000 C CNN
+F 2 "" H 9710 5000 50  0001 C CNN
+F 3 "" H 9710 5000 50  0001 C CNN
+	1    9710 5000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9710 5000 9710 5210
+Wire Wire Line
+	9450 5200 9530 5200
+Wire Wire Line
+	9530 5200 9530 5100
+Connection ~ 9530 5100
+$Comp
+L GND #PWR031
+U 1 1 5A05D990
+P 9710 5620
+F 0 "#PWR031" H 9710 5370 50  0001 C CNN
+F 1 "GND" H 9710 5470 50  0000 C CNN
+F 2 "" H 9710 5620 50  0001 C CNN
+F 3 "" H 9710 5620 50  0001 C CNN
+	1    9710 5620
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9710 5620 9710 5510
+Connection ~ 9710 5100
+Wire Wire Line
+	8410 5000 8410 5210
+Wire Wire Line
+	8650 5200 8560 5200
+Wire Wire Line
+	8560 5200 8560 5100
+Connection ~ 8560 5100
+$Comp
+L CP C8
+U 1 1 5A05DF5B
+P 8410 5360
+F 0 "C8" H 8435 5460 50  0000 L CNN
+F 1 "1u" H 8435 5260 50  0000 L CNN
+F 2 "Capacitors_Tantalum_SMD:CP_Tantalum_Case-A_EIA-3216-18_Hand" H 8448 5210 50  0001 C CNN
+F 3 "" H 8410 5360 50  0001 C CNN
+	1    8410 5360
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR032
+U 1 1 5A05DF61
+P 8410 5620
+F 0 "#PWR032" H 8410 5370 50  0001 C CNN
+F 1 "GND" H 8410 5470 50  0000 C CNN
+F 2 "" H 8410 5620 50  0001 C CNN
+F 3 "" H 8410 5620 50  0001 C CNN
+	1    8410 5620
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8410 5620 8410 5510
+Connection ~ 8410 5100
+Wire Wire Line
+	9450 5100 9710 5100
+$Comp
+L C C9
+U 1 1 5A05E615
+P 9710 5360
+F 0 "C9" H 9735 5460 50  0000 L CNN
+F 1 "1u" H 9735 5260 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805_HandSoldering" H 9748 5210 50  0001 C CNN
+F 3 "" H 9710 5360 50  0001 C CNN
+	1    9710 5360
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R5
+U 1 1 5A2EE9D4
+P 7680 3530
+F 0 "R5" V 7760 3530 50  0000 C CNN
+F 1 "1k" V 7680 3530 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 7610 3530 50  0001 C CNN
+F 3 "" H 7680 3530 50  0001 C CNN
+	1    7680 3530
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7190 3530 7530 3530
+Wire Wire Line
+	7530 3530 7530 3390
+Wire Wire Line
+	7530 3390 7570 3390
+Connection ~ 7530 3530
+$Comp
+L C_Small C10
+U 1 1 5A2EF780
+P 8090 3690
+F 0 "C10" H 8100 3760 50  0000 L CNN
+F 1 "10n" H 8100 3610 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805_HandSoldering" H 8090 3690 50  0001 C CNN
+F 3 "" H 8090 3690 50  0001 C CNN
+	1    8090 3690
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	7190 3630 7530 3630
+Wire Wire Line
+	7530 3630 7530 3810
+Wire Wire Line
+	7530 3810 8090 3810
+Wire Wire Line
+	8090 3810 8090 3790
+Wire Wire Line
+	8090 3590 8090 3530
+Wire Wire Line
+	8090 3530 7830 3530
+Wire Wire Line
+	7590 3700 7530 3700
+Connection ~ 7530 3700
 $EndSCHEMATC
