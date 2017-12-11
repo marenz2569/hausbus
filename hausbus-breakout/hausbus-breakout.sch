@@ -1074,4 +1074,14 @@ Wire Wire Line
 Wire Wire Line
 	7590 3700 7530 3700
 Connection ~ 7530 3700
+Wire Notes Line
+	7500 3320 7500 3990
+Wire Notes Line
+	7500 3990 8160 3990
+Wire Notes Line
+	8160 3990 8160 3320
+Wire Notes Line
+	8160 3320 7500 3320
+Text Notes 7510 3990 0    39   ~ 0
+this may look really\nweird, but trust me,\nit works.
 $EndSCHEMATC
