@@ -13,7 +13,7 @@
 #endif
 
 #define ID(a) uint8_t EEMEM pwm_lock_ ## a ## _safe = 0;
-#define ENTRY(a, b, c) uint8_t EEMEM pwm_value_ ## b ## c ## _safe = 255;
+#define ENTRY(a, b, c) uint8_t EEMEM pwm_value_ ## b ## c ## _safe = UINT8_MAX;
 	PWM_TABLE
 #undef ENTRY
 #undef ID
@@ -27,7 +27,7 @@ struct {
 		uint8_t *value_safe;
 	} sub[4];
 } pwm_handlermap[] = {
-#define ID(a) { .id = a, .sub = {{ .value = NULL, .value_safe = NULL }} }
+#define ID(a) { .id = a, .lock = 0, .sub = {{ .value = NULL, .value_safe = NULL }} }
 #define ENTRY(a, b, c)
 	PWM_TABLE
 #undef ENTRY
