@@ -66,7 +66,6 @@ void pwm_init(void)
 #define ID(a) i++; \
               pwm_handlermap[i-1].lock_safe = &pwm_lock_ ## a ## _safe;
 #define ENTRY(a, b, c) DDR ## b |= _BV(DD ## b ## c); \
-                       PORT ## b &= ~_BV(PORT ## b ## c); \
                        pwm_handlermap[i-1].sub[a].value = &reg_ ## b ## c; \
 											 pwm_handlermap[i-1].sub[a].value_safe = &pwm_value_ ## b ## c ## _safe; \
                        tccr_ ## b ## c |= pin_ ## b ## c; \
@@ -75,7 +74,7 @@ void pwm_init(void)
 #undef ENTRY
 #undef ID
 
-	/* div 64 prescaler, fast pwm, f = ~244Hz */
+	/* div 256 prescaler, fast pwm, f = ~244Hz with 16MHz f_clk */
 	/* setup timer 0 */
 	TCCR0A |= _BV(WGM01) | _BV(WGM00);
 	TCCR0B = _BV(CS02);
