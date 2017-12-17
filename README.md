@@ -14,7 +14,7 @@ function | note | forbidden variable names | tested
 --- | --- | --- | ---
 button | execute code on press, unpress or click count events | el | :white_check_mark:
 output |
-pwm | :white_check_mark:
+pwm ||| :white_check_mark:
 tick | code will be executed every 1ms | a, b, c | :white_check_mark:
 code | add your own functions to the c file || :white_check_mark:
 loop | add your own code to the loop otherwise the controller will be put to idle sleep mode; variables used here must be declared in the `init` function; do not write blocking code, otherwise can messages might not be read || :white_check_mark:
