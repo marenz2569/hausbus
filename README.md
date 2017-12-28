@@ -23,6 +23,7 @@ init | add your own code to the init || :white_check_mark:
 ## Debugging
 
 - **check the fuses!**
+- **check the slave select pin**
 
 ## Dependencies
 
