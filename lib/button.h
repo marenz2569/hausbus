@@ -1,5 +1,5 @@
-#ifndef SWITCH_H__
-#define SWITCH_H__
+#ifndef BUTTON_H__
+#define BUTTON_H__
 
 #include <inttypes.h>
 

@@ -12,8 +12,6 @@
 #error "BUTTON_TABLE is not defined."
 #endif
 
-#include <inttypes.h>
-
 struct {
 	const uint32_t id;
 	volatile uint32_t lock;

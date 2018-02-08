@@ -35,6 +35,9 @@
 				<xsl:for-each select="in">ENTRY(<xsl:value-of select="position()-1"/>, <xsl:value-of select="substring(@pin, 1, 1)"/>, <xsl:value-of select="substring(@pin, 2, 1)"/>, <xsl:value-of select="$defaultState"/>)<xsl:if test="position()&lt;last()"> \
 					</xsl:if>
 				</xsl:for-each>
+
+				#define EEPROM_TABLE \
+					ID(100)
 			</xsl:for-each>
 
 			#endif

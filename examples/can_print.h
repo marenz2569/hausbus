@@ -6,4 +6,6 @@
 #define OUTPUT_TABLE
 #define PWM_TABLE
 #define BUTTON_TABLE
+#define EEPROM_TABLE \
+	ID(100)
 #endif

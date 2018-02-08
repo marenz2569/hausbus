@@ -5,6 +5,12 @@ void can_msg_handler(void)
 	button_handler();
 }
 
+void eeprom_save(void)
+{
+	pwm_save();
+	output_save();
+}
+
 int main(void)
 {
 	uint8_t i;
