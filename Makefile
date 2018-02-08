@@ -32,10 +32,10 @@ all: $(addsuffix .hex, $(_TARGETS))
 
 %.flash: %.hex
 	sudo python3 -c 'import sys, serial, time; ser = serial.Serial(sys.argv[1],57600); ser.setDTR(0); time.sleep(0.1); ser.setDTR(1); ser.close()' /dev/ttyUSB0
-	sudo $(AVRDUDE) -C/usr/share/arduino/hardware/tools/avrdude.conf -q -q -cstk500v1 -P/dev/ttyUSB0 -b57600 -D -U flash:w:$<
+	sudo $(AVRDUDE) -C/usr/share/arduino/hardware/tools/avrdude.conf -q -q -cstk500v1 -P/dev/ttyUSB0 -b57600 -D -U flash:w:$< -U eeprom:w:$(basename $<).eep
 
 %.flash-usbasp:	%.hex
-	sudo $(AVRDUDE) -cusbasp -U flash:w:$<
+	sudo $(AVRDUDE) -cusbasp -U flash:w:$< -U eeprom:w:$(basename $<).eep
 
 fuse:
 	sudo $(AVRDUDE) -cusbasp $(FUSES)
@@ -62,7 +62,8 @@ config-clean: clean
 
 %.hex: %.elf
 	rm -f build/$(basename $@)/$(notdir $@)
-	avr-objcopy -j .text -j .data -O ihex $(basename $@).elf $@
+	avr-objcopy -j .text -j .data -O ihex $< $@
+	avr-objcopy -j .eeprom -O ihex $< $(basename $@).eep
 	echo "$(PUR)$(basename $@) binary$(NC)"
 	avr-size $(basename $@).elf --mcu=$(DEVICE) --format=avr
 

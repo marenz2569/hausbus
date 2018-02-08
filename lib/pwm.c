@@ -64,12 +64,13 @@ void pwm_init(void)
 	size_t i = 0;
 
 #define ID(a) i++; \
-              pwm_handlermap[i-1].lock_safe = &pwm_lock_ ## a ## _safe;
+              pwm_handlermap[i-1].lock_safe = &pwm_lock_ ## a ## _safe; \
+              pwm_handlermap[i-1].lock = eeprom_read_byte(pwm_handlermap[i-1].lock_safe);
 #define ENTRY(a, b, c) DDR ## b |= _BV(DD ## b ## c); \
                        pwm_handlermap[i-1].sub[a].value = &reg_ ## b ## c; \
 											 pwm_handlermap[i-1].sub[a].value_safe = &pwm_value_ ## b ## c ## _safe; \
                        tccr_ ## b ## c |= pin_ ## b ## c; \
-                       *pwm_handlermap[i-1].sub[a].value = UINT8_MAX;//eeprom_read_byte(pwm_handlermap[i-1].sub[a].value_safe);
+                       *pwm_handlermap[i-1].sub[a].value = eeprom_read_byte(pwm_handlermap[i-1].sub[a].value_safe);
 	PWM_TABLE
 #undef ENTRY
 #undef ID

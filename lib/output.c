@@ -48,12 +48,13 @@ void output_init(void)
 	size_t i = 0;
 
 #define ID(a) i++; \
-              output_handlermap[i-1].lock_safe = &output_lock_ ## a ## _safe;
+              output_handlermap[i-1].lock_safe = &output_lock_ ## a ## _safe; \
+              output_handlermap[i-1].lock = eeprom_read_dword(output_handlermap[i-1].lock_safe);
 #define ENTRY(a, b, c) output_handlermap[i-1].sub[a].port = &PORT ## b; \
                        output_handlermap[i-1].sub[a].pin = PORT ## b ## c; \
 											 output_handlermap[i-1].sub[a].pin_safe = &output_pin_ ## b ## c ## _safe; \
                        DDR ## b |= _BV(DD ## b ## c); \
-											 PORT ## b = (PORT ## b & ~_BV(PORT ## b ## c)) ;//| eeprom_read_byte(output_handlermap[i-1].sub[a].pin_safe);
+											 PORT ## b = (PORT ## b & ~_BV(PORT ## b ## c)) | eeprom_read_byte(output_handlermap[i-1].sub[a].pin_safe);
 	OUTPUT_TABLE
 #undef ENTRY
 #undef ID

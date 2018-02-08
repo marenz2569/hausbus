@@ -4,12 +4,12 @@
 *.hex
 
 # auto generated code
-lib/handler.h
 src/*.c
 src/*.h
 *.expand
 *.ps
 *.d
+*.eep
 build/
 
 # config
