@@ -4,9 +4,13 @@
 
 The configuration xml file is saved in `config-creator/`. Its schema definition is saved in `config-creator/config.xsd`.
 
-To generate the `.c` and `.h` files, saved in `src/`, execute `./config-create [configuration file]` in the above mentioned directory.
+To generate the `.c` and `.h` files, saved in `src/`, execute `make CONFIG=[path to config file]`.
 
-An example is given in `config-creator/config.xml.example`.
+An example configuration is given in `config-creator/config.xml.example`.
+
+## Bootloader
+
+The nodes on the can bus can be flashed via the [can-bootloader from Fabian Greif][3].
 
 ## Functions
 
@@ -38,3 +42,4 @@ init | add your own code to the init || :white_check_mark:
 
 [1]: https://sourceforge.net/projects/saxon/files/Saxon-HE/
 [2]: http://zsh.sourceforge.org
+[3]: http://www.kreatives-chaos.com/artikel/can-bootloader
