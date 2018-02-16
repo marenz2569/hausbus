@@ -3,4 +3,4 @@
 	url = https://github.com/marenz2569/mcp2515.git
 [submodule "lib/bootloader-can"]
 	path = lib/bootloader-can
-	url = https://github.com/dergraaf/bootloader-can.git
+	url = https://github.com/marenz2569/bootloader-can.git 
