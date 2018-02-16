@@ -6,11 +6,16 @@ OBJECTS    = lib/mcp2515/src/spi.o lib/mcp2515/src/mcp2515.o lib/uart.o lib/tick
 FUSES      = -U lfuse:w:0xbe:m -U hfuse:w:0xd9:m -U efuse:w:0xff:m
 
 USER_FOLDERS = src examples
-VOLATILE_FILES = .elf .o .expand .ps .d
+VOLATILE_FILES = .o .expand .d
+
 TARGETS = $(shell ls $(addsuffix /*.c, $(USER_FOLDERS)) 2> /dev/null)
 override _TARGETS = $(basename $(TARGETS))
 
+CONFIG =
+override _CONFIG = $(shell readlink -f $(CONFIG) 2> /dev/null)
+
 CFLAGS = -ffunction-sections -fdata-sections -Wfatal-errors
+LDFLAGS = -Wl,-gc-sections
 
 AVRDUDE = avrdude -p$(DEVICE)
 CC = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE) -std=gnu99 -fdump-rtl-expand -MD -MP
@@ -22,13 +27,18 @@ NC = \033[0m
 
 .PRECIOUS: %.elf
 
-all: $(addsuffix .hex, $(_TARGETS))
+all:
+ifeq ($(_CONFIG), )
+	$(MAKE) $(addsuffix .hex, $(_TARGETS))
+else
+	$(MAKE) $(addsuffix .config, $(_CONFIG))
+endif
 
 %.o:	%.c
 	$(CC) $(CFLAGS) -I$(dir $@) -I$(dir $@)mcp2515/src/ -Ibuild/$(basename $@)/ -Ibuild/$(basename $@)/lib/mcp2515/src/ -c $< -o $@
 
 %.ps: %.c
-	tools/callgraph/callgraph $(addsuffix .c.192r.expand, $(addprefix build/$(basename $@)/, $(basename $(OBJECTS))) $(basename $@)) --ignore "memcmp|put(s|char)|printf|.+_safe|.+\..+|__.+|uart_output|spi_wrrd|mcp2515_performpgm|can_(frame|tx_busy|rxh)" | dot -Tps > $@
+	tools/callgraph/callgraph $(addsuffix .c.192r.expand, $(addprefix build/$(basename $@)/, $(basename $(OBJECTS))) $(basename $@)) --ignore "memcmp|put(s|char)|printf|.+_safe|.+\..+|__.+|uart_output|spi_wrrd|mcp2515_performpgm|can_(frame|tx_busy|rxh)" | dot -Tps > build/$(basename $@)/$(notdir $@)
 
 %.flash: %.hex
 	sudo python3 -c 'import sys, serial, time; ser = serial.Serial(sys.argv[1],57600); ser.setDTR(0); time.sleep(0.1); ser.setDTR(1); ser.close()' /dev/ttyUSB0
@@ -46,26 +56,32 @@ clean:
 config-clean: clean
 	rm -rf src/*
 
+%.config: config-clean
+	cd config-creator/ && $(MAKE) $@
+
 %.elf: FORCE
 	mkdir -p build/$(basename $@)
 	cp -rf --preserve=all lib build/$(basename $@)
 	echo "$(PUR)Copy configs$(NC)"
 	cp -f --preserve=all $(basename $@).h build/$(basename $@)/lib/mcp2515/src/mcp2515_config.h
+	cp -f --preserve=all $(basename $@).h build/$(basename $@)/lib/bootloader-can/bootloader-avr-mcp2515/config.h
 	cp -f --preserve=all $(basename $@).h build/$(basename $@)/lib/handler.h
 	echo "$(PUR)Building objects$(NC)"
-	make $(addprefix build/$(basename $@)/, $(OBJECTS))
-	make $(basename $@).o
+	$(MAKE) $(addprefix build/$(basename $@)/, $(OBJECTS)) $(basename $@).o
 	echo "$(PUR)Building callgraph$(NC)"
-	make $(basename $@).ps
+	$(MAKE) $(basename $@).ps
 	echo "$(PUR)Building $(basename $@) binary$(NC)"
-	$(CC) -std=gnu99 -Wl,-gc-sections -o $@ $(addprefix build/$(basename $@)/, $(OBJECTS)) $(basename $@).o
+	$(CC) $(LDFLAGS) -o build/$(basename $@)/$(notdir $@) $(addprefix build/$(basename $@)/, $(OBJECTS)) $(basename $@).o
+	echo "$(PUR)Building $(basename $@) bootloader$(NC)"
+	cd build/$(basename $@)/lib/bootloader-can/bootloader-avr-mcp2515/ && $(MAKE)
+	cp build/$(basename $@)/lib/bootloader-can/bootloader-avr-mcp2515/bootloader.hex build/$(basename $@)/$(basename $(notdir $@))_bootloader.hex
 
 %.hex: %.elf
 	rm -f build/$(basename $@)/$(notdir $@)
-	avr-objcopy -j .text -j .data -O ihex $< $@
-	avr-objcopy -j .eeprom -O ihex $< $(basename $@).eep
+	avr-objcopy -j .text -j .data -O ihex build/$(basename $<)/$(notdir $<) build/$(basename $@)/$(notdir $@)
+	avr-objcopy -j .eeprom -O ihex build/$(basename $<)/$(notdir $<) build/$(basename $@)/$(basename $(notdir $@)).eep
 	echo "$(PUR)$(basename $@) binary$(NC)"
-	avr-size $(basename $@).elf --mcu=$(DEVICE) --format=avr
+	avr-size build/$(basename $@)/$(basename $(notdir $@)).elf --mcu=$(DEVICE) --format=avr
 
 # .PHONY did not end up working so I used the old varient FORCE
 FORCE:

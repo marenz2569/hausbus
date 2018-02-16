@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <hausbus xsi:noNamespaceSchemaLocation="config.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<device name="taster">
+	<device name="taster" board-id="40">
 		<button id="400">
 			<in pin="C0">
 				<short>
@@ -17,7 +17,7 @@ DIMMER(202, 0);
 			</in>
 		</button>
 	</device>
-	<device name="lampe">
+	<device name="lampe" board-id="20">
 		<output id="200">
 			<out pin="C0"/>
 		</output>

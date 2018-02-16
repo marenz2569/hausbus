@@ -1,3 +1,6 @@
 [submodule "lib/mcp2515"]
 	path = lib/mcp2515
 	url = https://github.com/marenz2569/mcp2515.git
+[submodule "lib/bootloader-can"]
+	path = lib/bootloader-can
+	url = https://github.com/dergraaf/bootloader-can.git

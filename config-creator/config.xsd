@@ -68,8 +68,8 @@
 		<xsi:complexType>
 			<xsi:sequence>
 
-				<!-- device -->
-				<xsi:element name="device" minOccurs="0" maxOccurs="unbounded">
+				<!-- device type may only contain a maximum of 256 unique 8 bit addresses as bootloader can only address so many -->
+				<xsi:element name="device" minOccurs="0" maxOccurs="256">
 
 					<!-- function list -->
 					<xsi:complexType>
@@ -137,7 +137,14 @@
 							<xsi:element name="init" type="xsi:string" minOccurs="0" maxOccurs="1"/>
 
 						</xsi:choice>
-						<xsi:attribute name="name" type="xsi:string" use="required"/>
+						<xsi:attribute name="name" use="required">
+							<xsi:simpleType>
+								<xsi:restriction base="xsi:string">
+									<xsi:pattern value="[^_]+"/>
+								</xsi:restriction>
+							</xsi:simpleType>
+						</xsi:attribute>
+						<xsi:attribute name="board-id" type="xsi:unsignedByte" use="required"/>
 						<xsi:attribute name="ss" type="generalpins" use="optional" default="D7"/>
 					</xsi:complexType>
 
@@ -162,6 +169,12 @@
 		<xsi:unique name="unique-id">
 			<xsi:selector xpath="*/*"/>
 			<xsi:field xpath="@id"/>
+		</xsi:unique>
+
+		<!-- board-id has to be unique -->
+		<xsi:unique name="unique-board-id">
+			<xsi:selector xpath="*"/>
+			<xsi:field xpath="@board-id"/>
 		</xsi:unique>
 
 	</xsi:element>

@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include <avr/sleep.h>
 #include <string.h>
+#include <avr/wdt.h>
 
 #include <mcp2515.h>
 #include <mcp2515_defs.h>
@@ -16,6 +17,10 @@
 
 void can_msg_printer(void)
 {
+		pwm_handler();
+	output_handler();
+	button_handler();
+
 	uint8_t i;
 
 	if (can_is_extended || can_is_remote_frame) {
@@ -36,7 +41,10 @@ void can_msg_printer(void)
 
 int main(void)
 {
-	uint8_t i;
+	uint8_t i, sreg;
+
+	MCUSR &= ~(_BV(WDRF) | _BV(BORF) | _BV(EXTRF) | _BV(PORF));
+	wdt_disable();
 
 	pwm_init();
 	output_init();
@@ -52,11 +60,17 @@ int main(void)
 	
 	mcp2515_init();
 
+	DDRD |= _BV(DDD0);
+	PORTD &= ~_BV(PORTD0);
+
 	sei();
 
+	printf("isr activated\n");
 	set_sleep_mode(SLEEP_MODE_IDLE);
 
 	for (;;) {
+loop_start:
+		// do stuff for new packets
 		for (i=0; i<2; i++) {
 			if (can_buffer[i].state == FILLED) {
 				memcpy(&can_frame, can_buffer + i, sizeof(can_frame));
@@ -64,6 +78,15 @@ int main(void)
 				can_buffer[i].state = FREE;
 			}
 		}
+		// goto sleep while waiting for new packets
+		sreg = SREG;
+		cli();
+		for (i=0; i<2; i++) {
+			if (can_buffer[i].state == FILLED) {
+				goto loop_start;
+			}
+		}
+		SREG = sreg;
 		sleep_mode();
 	}
 
@@ -77,4 +100,34 @@ ISR(INT0_vect)
 
 void user_tick_interrupt(void)
 {
+
+static uint16_t every_1s = 0;
+if (++every_1s > 1000) {
+	every_1s = 0;
+	PORTD ^= _BV(PORTD0);
+	output_toggle(204,0);
+}
+			static uint8_t a = 0,
+	               b = 0,
+	               c = 0;
+
+	if (++a > 100) {
+		a = 0;
+
+		pwm_status();
+		output_status();
+		button_status();
+	}
+
+	if (++b > 10) {
+		b = 0;
+
+		button_tick();
+	}
+
+	if (++c > 16) {
+		c = 0;
+
+		button_dimmer();
+	}
 }

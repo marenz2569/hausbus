@@ -15,6 +15,11 @@
 			#define MCP2515_CS_DDR DDR<xsl:value-of select="substring($ss, 1, 1)"/>
 			#define MCP2515_CS_PORT PORT<xsl:value-of select="substring($ss, 1, 1)"/>
 			#define MCP2515_CS_PIN PORT<xsl:value-of select="$ss"/>
+			#define MCP2515_CS <xsl:value-of select="substring($ss, 1, 1)"/>,<xsl:value-of select="substring($ss, 2, 1)"/>
+			#define MCP2515_INT D,2
+			#define BOOT_LED D,3
+			#define BOOTLOADER_TYPE 0
+			#define BOOTLOADER_BOARD_ID <xsl:value-of select="@board-id"/>
 
 			#define PWM_TABLE \<xsl:for-each select="pwm">
 				ID(<xsl:value-of select="@id"/>) \
@@ -35,10 +40,10 @@
 				<xsl:for-each select="in">ENTRY(<xsl:value-of select="position()-1"/>, <xsl:value-of select="substring(@pin, 1, 1)"/>, <xsl:value-of select="substring(@pin, 2, 1)"/>, <xsl:value-of select="$defaultState"/>)<xsl:if test="position()&lt;last()"> \
 					</xsl:if>
 				</xsl:for-each>
-
-				#define EEPROM_TABLE \
-					ID(100)
 			</xsl:for-each>
+
+			#define EEPROM_TABLE \
+				ID(100)
 
 			#endif
 		</xsl:result-document>
