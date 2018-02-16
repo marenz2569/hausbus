@@ -73,7 +73,7 @@ config-clean: clean
 	echo "$(PUR)Building $(basename $@) binary$(NC)"
 	$(CC) $(LDFLAGS) -o build/$(basename $@)/$(notdir $@) $(addprefix build/$(basename $@)/, $(OBJECTS)) $(basename $@).o
 	echo "$(PUR)Building $(basename $@) bootloader$(NC)"
-	cd build/$(basename $@)/lib/bootloader-can/bootloader-avr-mcp2515/ && $(MAKE)
+	cd build/$(basename $@)/lib/bootloader-can/bootloader-avr-mcp2515/ && $(MAKE) MCU=$(DEVICE) F_CPU=$(CLOCK)
 	cp build/$(basename $@)/lib/bootloader-can/bootloader-avr-mcp2515/bootloader.hex build/$(basename $@)/$(basename $(notdir $@))_bootloader.hex
 
 %.hex: %.elf
