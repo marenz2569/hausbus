@@ -8,11 +8,7 @@ To generate the `.c` and `.h` files, saved in `src/`, execute `make CONFIG=[path
 
 An example configuration is given in `config-creator/config.xml.example`.
 
-## Bootloader
-
-The nodes on the can bus can be flashed via the [can-bootloader from Fabian Greif][3].
-
-## Functions
+### Functions
 
 function | note | forbidden variable names | tested
 --- | --- | --- | ---
@@ -23,6 +19,15 @@ tick | code will be executed every 1ms | a, b, c | :white_check_mark:
 code | add your own functions to the c file || :white_check_mark:
 loop | add your own code to the loop otherwise the controller will be put to idle sleep mode; variables used here must be declared in the `init` function; do not write blocking code, otherwise can messages might not be read || :white_check_mark:
 init | add your own code to the init || :white_check_mark:
+
+
+## Building
+
+Execute `make -j` to build all targets or execute `make -j TARGETS=[list of .c files]`.
+
+## Bootloader
+
+The nodes on the can bus can be flashed via the [can-bootloader from Fabian Greif][3].
 
 ## Debugging
 
