@@ -14,11 +14,11 @@ override _TARGETS = $(basename $(TARGETS))
 CONFIG =
 override _CONFIG = $(shell readlink -f $(CONFIG) 2> /dev/null)
 
-CFLAGS = -ffunction-sections -fdata-sections -Wfatal-errors
+CFLAGS = -Wall -Wfatal-errors -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax
 LDFLAGS = -Wl,-gc-sections
 
 AVRDUDE = avrdude -p$(DEVICE)
-CC = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE) -std=gnu99 -fdump-rtl-expand -MD -MP
+CC = avr-gcc -Os -flto -DF_CPU=$(CLOCK) -mmcu=$(DEVICE) -std=gnu99 -MD -MP
 
 PUR = \033[0;35m
 NC = \033[0m
@@ -36,9 +36,6 @@ endif
 
 %.o:	%.c
 	$(CC) $(CFLAGS) -I$(dir $@) -I$(dir $@)mcp2515/src/ -Ibuild/$(basename $@)/ -Ibuild/$(basename $@)/lib/mcp2515/src/ -c $< -o $@
-
-%.ps: %.c
-	tools/callgraph/callgraph $(addsuffix .c.192r.expand, $(addprefix build/$(basename $@)/, $(basename $(OBJECTS))) $(basename $@)) --ignore "memcmp|put(s|char)|printf|.+_safe|.+\..+|__.+|uart_output|spi_wrrd|mcp2515_performpgm|can_(frame|tx_busy|rxh)" | dot -Tps > build/$(basename $@)/$(notdir $@)
 
 %.flash: %.hex
 	sudo python3 -c 'import sys, serial, time; ser = serial.Serial(sys.argv[1],57600); ser.setDTR(0); time.sleep(0.1); ser.setDTR(1); ser.close()' /dev/ttyUSB0
@@ -68,12 +65,10 @@ config-clean: clean
 	cp -f --preserve=all $(basename $@).h build/$(basename $@)/lib/handler.h
 	echo "$(PUR)Building objects$(NC)"
 	$(MAKE) $(addprefix build/$(basename $@)/, $(OBJECTS)) $(basename $@).o
-	echo "$(PUR)Building callgraph$(NC)"
-	$(MAKE) $(basename $@).ps
 	echo "$(PUR)Building $(basename $@) binary$(NC)"
 	$(CC) $(LDFLAGS) -o build/$(basename $@)/$(notdir $@) $(addprefix build/$(basename $@)/, $(OBJECTS)) $(basename $@).o
 	echo "$(PUR)Building $(basename $@) bootloader$(NC)"
-	cd build/$(basename $@)/lib/bootloader-can/bootloader-avr-mcp2515/ && $(MAKE) MCU=$(DEVICE) F_CPU=$(CLOCK)
+	cd build/$(basename $@)/lib/bootloader-can/bootloader-avr-mcp2515/ && env -u MFLAGS -u MAKEFLAGS $(MAKE) MCU=$(DEVICE) F_CPU=$(CLOCK)
 	cp build/$(basename $@)/lib/bootloader-can/bootloader-avr-mcp2515/bootloader.hex build/$(basename $@)/$(basename $(notdir $@))_bootloader.hex
 
 %.hex: %.elf
