@@ -1,16 +1,13 @@
-# avr
-*.o
-*.elf
-*.hex
-
 # auto generated code
 src/*.c
 src/*.h
-*.expand
-*.ps
-*.d
-*.eep
+
+# avr build stuff
 build/
+*.o
+*.d
+*.elf
+*.hex
 
 # config
 config-creator/*.xml
